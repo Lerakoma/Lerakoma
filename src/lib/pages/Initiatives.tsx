@@ -4,6 +4,7 @@ import Footer from "@/components/Footer";
 import HeroBgPattern from "@/components/HeroBgPattern";
 import slgLogo from "@/assets/SLG_LogoLight.png";
 import apcLogo from "@/assets/APC_Consultancy.png";
+import ppLogo from "@/assets/PlainlyPowered_Logo.svg";
 
 const initiatives = [
   {
@@ -19,6 +20,20 @@ const initiatives = [
       "The Gateway provides connections, resources, and assistance to help investors make sustainable investments while creating genuine social impact — homes for vulnerable adults who need specialist accommodation.",
     ],
     mission: "Connecting supported living providers with property investors to create more homes for those who need them most.",
+  },
+  {
+    name: "Plainly Powered",
+    role: "Founder",
+    logo: ppLogo,
+    url: "https://plainlypowered.com" as string | undefined,
+    summary:
+      "Plainly Powered helps local businesses put AI to work on the jobs that eat their week. Each project follows the same three steps: review where the time actually goes, build one useful fix that works from day one, then show the owner how to run it themselves, in plain English.",
+    details: [
+      "A website that works as hard as the business does — clear, quick and kept fresh with regular writing in the owner's own voice, so enquiries keep arriving even when no one can pick up the phone.",
+      "Repetitive admin such as quotes, stock and bookkeeping turned into something done at the press of a button, freeing up hours every week for the work that actually grows the business.",
+      "A practical social media plan built around what's working in the sector right now, handed over ready to follow — and every fix is one the business can run itself, without being tied to ongoing support.",
+    ],
+    mission: "Helping local businesses get their week back, with AI that's built for them and explained in plain English.",
   },
   {
     name: "Advance Project Consultancy",
