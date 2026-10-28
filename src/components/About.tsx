@@ -1,16 +1,22 @@
 import { Link } from "@tanstack/react-router";
 
 
+const PlainlyPowered = () => (
+  <a href="https://plainlypowered.com" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">
+    Plainly Powered
+  </a>
+);
+
 const founders = [
   {
     name: "Mark Bowen",
     role: "Co-Founder & Director",
-    bio: "Mark spent over 30 years in financial services in senior roles, leading major change programmes across technology, people and process. Today he focuses on consulting and mentoring — working with businesses and entrepreneurs looking to grow — alongside managing Lerakoma's portfolio and investor relationships.",
+    bio: <>Mark has more than 40 years in software, over 30 of them in senior financial services roles leading major change programmes across technology, people and process. Today he focuses on consulting and mentoring businesses and entrepreneurs looking to grow, including AI and website work through <PlainlyPowered />, alongside managing Lerakoma’s portfolio and investor relationships.</>,
   },
   {
     name: "Leah Bowen",
     role: "Co-Founder & Director",
-    bio: "Leah has 25 years of experience across multiple industries in project office and change management roles, the majority in financial services supporting large-scale transformation programmes. She now concentrates on managing Lerakoma's portfolio day to day — overseeing administrative, operational and compliance requirements of each property.",
+    bio: <>Leah has 25 years of experience across multiple industries in project office and change management roles, the majority in financial services supporting large-scale change programmes. She manages Lerakoma’s portfolio day to day, overseeing the administrative, operational and compliance requirements of each property, and leads the operations and social media strategy work at <PlainlyPowered />.</>,
   },
 ];
 
@@ -48,7 +54,7 @@ const About = () => (
         <p className="text-accent font-medium text-sm tracking-widest uppercase mb-2">About Us</p>
         <Link to="/who-we-are" className="text-3xl md:text-4xl font-bold mb-4 hover:text-accent transition-colors inline-block">Meet the Founders</Link>
         <p className="text-muted-foreground max-w-2xl mx-auto">
-          With combined experience spanning over 55 years in financial services, property and business management, Mark and Leah bring a hands-on, research-led approach to everything they do.
+          With combined experience spanning over 65 years in financial services, property and business management, Mark and Leah bring a hands-on, research-led approach to everything they do.
         </p>
       </div>
 
