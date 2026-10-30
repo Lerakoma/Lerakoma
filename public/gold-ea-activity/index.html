@@ -1,0 +1,1594 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; object-src 'none'; base-uri 'none'">
+  <title>Gold EA | Virtual trade activity</title>
+  <style>
+:root {
+  color-scheme: light;
+  --ink: #192638;
+  --muted: #657184;
+  --line: #e3e6e9;
+  --paper: #fff;
+  --surface: #f4f5f4;
+  --navy: #132235;
+  --navy-soft: #20334b;
+  --gold: #bf8b34;
+  --gold-soft: #fff5df;
+  --green: #15745b;
+  --green-soft: #eaf7f1;
+  --red: #b34242;
+  --red-soft: #fff0ee;
+  --shadow: 0 12px 34px rgba(20, 34, 51, .055);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--surface); color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Arial, sans-serif;
+  font-size: 14px; line-height: 1.45; }
+button, input, select { font: inherit; }
+button { cursor: pointer; }
+button:disabled { cursor: not-allowed; opacity: .48; }
+[hidden] { display: none !important; }
+a { color: inherit; }
+.app-header { background: var(--navy); color: #fff; border-bottom: 1px solid #35465a; }
+.header-inner { max-width: 1536px; min-height: 82px; margin: auto; padding: 16px 32px;
+  display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.brand { display: flex; align-items: center; gap: 13px; min-width: 255px; }
+.brand-icon { width: 42px; height: 42px; border-radius: 12px; background: linear-gradient(140deg, #d6a047, #98701f);
+  display: grid; place-items: center; box-shadow: inset 0 1px 0 #ffffff66; }
+.brand-icon svg { width: 24px; height: 24px; }
+.brand-name { display: block; font-size: 17px; line-height: 1.2; letter-spacing: -.025em; font-weight: 760; }
+.brand-caption { display: block; margin-top: 3px; font-size: 11px; letter-spacing: .15em;
+  color: #b6c5d8; font-weight: 700; }
+.header-tools { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 8px; }
+.privacy-chip { color: #b7c7d9; display: inline-flex; align-items: center; gap: 7px;
+  font-size: 12px; padding: 8px 12px; margin-right: 7px; white-space: nowrap; }
+.privacy-dot { width: 7px; height: 7px; border-radius: 50%; background: #7bd6a7;
+  box-shadow: 0 0 0 4px #7bd6a722; }
+.btn { border: 1px solid transparent; border-radius: 9px; min-height: 38px; padding: 8px 14px;
+  display: inline-flex; justify-content: center; align-items: center; gap: 7px;
+  font-size: 12px; font-weight: 700; white-space: nowrap; text-decoration: none; transition: .16s ease; }
+.btn:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible,
+.trade-card:focus-visible { outline: 3px solid #d8a640; outline-offset: 2px; }
+.btn:hover:not(:disabled) { transform: translateY(-1px); }
+.btn-light { background: #fff; color: var(--navy); box-shadow: 0 2px 6px #00000020; }
+.btn-light:hover:not(:disabled) { background: #f3f6fa; }
+.btn-outline { background: transparent; border-color: #607188; color: #fff; }
+.btn-outline:hover:not(:disabled) { background: #ffffff16; border-color: #a8b9cb; }
+.btn-quiet { background: #fff; border-color: #dce0e4; color: var(--ink); }
+.btn-quiet:hover:not(:disabled) { border-color: var(--gold); background: #fffaf0; }
+.btn-gold { background: var(--gold); color: #fff; }
+.btn-gold:hover:not(:disabled) { background: #a97723; }
+.file-input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.page { max-width: 1536px; margin: auto; padding: 34px 32px 70px; }
+.status-line { min-height: 23px; color: var(--muted); font-size: 12px; margin-bottom: 10px; }
+.status-line.error { color: var(--red); font-weight: 700; }
+.empty-shell { margin: 26px 0 0; background: var(--paper); border: 1px solid var(--line);
+  border-radius: 22px; overflow: hidden; box-shadow: var(--shadow); display: grid;
+  grid-template-columns: 1fr minmax(390px, .85fr); min-height: 510px; }
+.empty-copy { padding: 70px 66px; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; }
+.eyebrow { color: var(--gold); font-size: 10px; font-weight: 820; letter-spacing: .18em; margin: 0 0 9px; }
+.empty-copy h1 { font-size: clamp(34px, 4.2vw, 60px); max-width: 650px; line-height: 1.06;
+  letter-spacing: -.055em; margin: 0; font-weight: 760; }
+.empty-copy .lead { margin: 22px 0 24px; max-width: 540px; color: #5e6c7b;
+  font-size: 17px; line-height: 1.65; }
+.empty-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.empty-actions .btn { min-height: 44px; padding-inline: 18px; font-size: 13px; }
+.empty-note { margin: 24px 0 0; display: flex; align-items: flex-start; gap: 9px;
+  color: #798492; max-width: 550px; font-size: 12px; }
+.empty-note svg { width: 16px; height: 16px; flex: none; margin-top: 1px; }
+.hero-art { position: relative; padding: 44px 38px; overflow: hidden; display: grid; place-items: center;
+  background: radial-gradient(circle at 76% 20%, #395776 0, transparent 40%),
+    linear-gradient(145deg, #1d354c, #0f1e30); }
+.hero-art::before { content: ""; position: absolute; inset: 0; opacity: .35;
+  background-image: linear-gradient(#ffffff10 1px, transparent 1px),
+    linear-gradient(90deg, #ffffff10 1px, transparent 1px); background-size: 44px 44px; }
+.mock-panel { position: relative; width: min(440px, 100%); background: #fcfdfd; border-radius: 15px;
+  box-shadow: 0 20px 65px #0006; overflow: hidden; transform: rotate(-2deg); }
+.mock-panel-head { display: flex; justify-content: space-between; align-items: center;
+  padding: 18px 22px; border-bottom: 1px solid #e7e9ec; }
+.mock-panel-head strong { font-size: 15px; }
+.mock-panel-head span { background: #eaf7f1; color: #147056; border-radius: 99px;
+  padding: 4px 8px; font-size: 10px; font-weight: 750; }
+.mock-panel-body { padding: 22px; }
+.mock-panel-body svg { width: 100%; height: 175px; }
+.mock-panel-foot { display: flex; justify-content: space-between; border-top: 1px solid #edf0f2;
+  padding: 16px 22px; color: #7a8491; font-size: 11px; }
+.mock-panel-foot strong { font-size: 15px; color: #167b5e; }
+.trust-strip { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
+.trust-strip span { background: #fff; border: 1px solid var(--line); border-radius: 99px;
+  padding: 9px 14px; font-size: 12px; color: #667488; }
+.dashboard-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; margin-bottom: 24px; }
+.dashboard-head h1 { font-size: clamp(28px, 3vw, 39px); letter-spacing: -.045em;
+  margin: 3px 0 5px; line-height: 1.12; }
+.dashboard-head p { color: var(--muted); margin: 0; font-size: 13px; }
+.dashboard-head-right { text-align: right; min-width: 210px; }
+.run-id { display: block; color: var(--muted); font-size: 11px; max-width: 440px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.audit-pill { display: inline-flex; align-items: center; gap: 7px; border: 1px solid #d5e9dc;
+  background: #eef8f2; color: #176d50; padding: 7px 11px; border-radius: 99px;
+  font-size: 11px; font-weight: 750; margin-bottom: 8px; }
+.audit-pill::before { content: "✓"; font-weight: 900; }
+.metric-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-bottom: 18px; }
+.metric { background: #fff; border: 1px solid var(--line); border-radius: 14px;
+  box-shadow: var(--shadow); padding: 18px 20px; min-height: 112px; }
+.metric span { color: var(--muted); font-size: 11px; font-weight: 680; letter-spacing: .02em; }
+.metric strong { display: block; margin-top: 6px; color: var(--ink); font-size: clamp(22px, 2.3vw, 30px);
+  letter-spacing: -.04em; line-height: 1.13; font-variant-numeric: tabular-nums; }
+.metric small { display: block; margin-top: 6px; color: #8993a0; font-size: 11px; }
+.metric .positive, .positive { color: var(--green) !important; }
+.metric .negative, .negative { color: var(--red) !important; }
+.warning-box { background: #fff9ec; border: 1px solid #f0dbaf; color: #70572a; border-radius: 12px;
+  padding: 10px 17px; margin-bottom: 18px; font-size: 12px; }
+.warning-box p { margin: 5px 0; }
+.workspace { display: grid; grid-template-columns: 300px minmax(0, 1fr);
+  align-items: start; gap: 16px; }
+.sidebar, .detail-shell { border: 1px solid var(--line); background: #fff;
+  border-radius: 15px; box-shadow: var(--shadow); }
+.sidebar { overflow: hidden; position: sticky; top: 14px; max-height: calc(100vh - 28px);
+  display: flex; flex-direction: column; }
+.sidebar-head { padding: 20px 18px 14px; border-bottom: 1px solid var(--line); }
+.section-title { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.section-title h3 { font-size: 19px; letter-spacing: -.035em; margin: 0; }
+.section-title > span { color: #8792a0; font-size: 11px; }
+.sidebar h2 { font-size: 17px; margin: 0 0 14px; letter-spacing: -.025em; }
+.search { width: 100%; border: 1px solid #dce1e5; border-radius: 8px; min-height: 38px;
+  padding: 9px 11px; background: #fcfcfd; color: var(--ink); outline: none; }
+.search::placeholder { color: #98a1ac; }
+.segmented { display: flex; gap: 5px; background: #f2f3f4; border-radius: 8px; padding: 4px; margin-top: 12px; }
+.segmented button { border: 0; background: transparent; border-radius: 6px; padding: 6px 10px;
+  flex: 1; color: var(--muted); font-size: 11px; font-weight: 750; }
+.segmented button.selected { background: white; color: var(--ink); box-shadow: 0 1px 4px #00000012; }
+.sort-line { display: flex; justify-content: space-between; align-items: center; padding: 10px 17px;
+  color: #929ba5; font-size: 11px; border-bottom: 1px solid var(--line); }
+.sort-line select { border: 0; background: transparent; color: #647183; font-size: 11px; cursor: pointer; }
+.trade-list { overflow-y: auto; min-height: 100px; }
+.trade-card { width: 100%; text-align: left; display: block; border: 0; border-left: 3px solid transparent;
+  background: #fff; padding: 15px 16px; border-bottom: 1px solid #edf0f2; color: var(--ink); }
+.trade-card:hover { background: #fafaf8; }
+.trade-card.active { background: #fffaf0; border-left-color: var(--gold); }
+.trade-card-top, .trade-card-bottom { display: flex; justify-content: space-between; align-items: center;
+  gap: 10px; }
+.trade-card-top { margin-bottom: 9px; }
+.direction { font-size: 10px; font-weight: 830; letter-spacing: .06em; border-radius: 5px;
+  padding: 4px 7px; vertical-align: middle; }
+.direction.buy { color: var(--green); background: var(--green-soft); }
+.direction.sell { color: #a35236; background: #fff0e9; }
+.trade-num { color: #9aa3ae; font-size: 10px; font-weight: 700; }
+.trade-card strong { display: block; font-size: 12px; overflow: hidden; white-space: nowrap;
+  text-overflow: ellipsis; margin-bottom: 8px; }
+.trade-card-times { display: grid; gap: 3px; margin-bottom: 9px; font-size: 10px;
+  color: #778492; font-variant-numeric: tabular-nums; }
+.trade-card-times > span { display: grid; grid-template-columns: 41px minmax(0, 1fr); gap: 5px; }
+.trade-card-times > span > span:last-child { overflow-wrap: anywhere; }
+.trade-card-bottom { font-size: 11px; color: #8a94a0; }
+.trade-card-bottom span:last-child { font-weight: 760; font-variant-numeric: tabular-nums; }
+.empty-list { padding: 20px; color: #8792a0; text-align: center; }
+.detail-shell { overflow: hidden; min-height: 440px; }
+.detail-tabs { display: flex; gap: 0; padding: 0 23px; border-bottom: 1px solid var(--line); }
+.detail-tabs button { border: 0; border-bottom: 2px solid transparent; background: none;
+  color: #8490a0; padding: 17px 18px 14px; font-size: 12px; font-weight: 760; }
+.detail-tabs button.selected { color: var(--ink); border-color: var(--gold); }
+.detail-inner { padding: 25px; }
+.no-selection { min-height: 360px; display: grid; place-items: center; color: #8593a1; }
+.detail-head { display: flex; justify-content: space-between; gap: 24px; align-items: start; }
+.detail-head h2 { display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  font-size: clamp(18px, 2vw, 25px); letter-spacing: -.04em; margin: 2px 0 7px; overflow-wrap: anywhere; }
+.detail-sub { font-size: 12px; color: #8893a0; margin: 0; }
+.net-block { text-align: right; min-width: 150px; }
+.net-block span, .net-block small { color: #8c97a4; display: block; font-size: 11px; }
+.net-block strong { display: block; font-size: 27px; letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
+.trade-facts { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0;
+  background: #f7f8f8; border: 1px solid #eceef0; border-radius: 10px; margin: 22px 0 24px; }
+.trade-facts div { padding: 13px 14px; border-right: 1px solid #e7e9eb; }
+.trade-facts div:last-child { border-right: 0; }
+.trade-facts span, .financial-row span { color: #8e99a5; font-size: 10px; font-weight: 720; display: block; }
+.trade-facts strong { display: block; margin-top: 4px; font-size: 15px; font-variant-numeric: tabular-nums; }
+.signal-card { border: 1px solid var(--line); border-radius: 12px; padding: 17px 19px;
+  margin: 0 0 17px; }
+.signal-card h3 { font-size: 18px; margin: 0 0 8px; }
+.signal-card p { color: #657385; font-size: 11px; line-height: 1.5; }
+.signal-note { margin: 0 0 14px; }
+.signal-summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 9px; margin-bottom: 10px; }
+.signal-summary > div { background: #f7f8f8; border-radius: 7px; padding: 10px; }
+.signal-summary span { display: block; color: #8792a0; font-size: 10px; }
+.signal-summary strong { display: block; margin-top: 4px; font-size: 12px; overflow-wrap: anywhere; }
+.signal-expand { border-top: 1px solid var(--line); padding: 9px 0; }
+.signal-expand:last-child { padding-bottom: 0; }
+.signal-expand summary { cursor: pointer; font-size: 11px; font-weight: 750; }
+.signal-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 15px;
+  margin-top: 10px; }
+.signal-grid > div { display: flex; justify-content: space-between; gap: 10px;
+  border-bottom: 1px solid #edf0f2; padding: 5px 0; font-size: 10px; }
+.signal-grid span, .signal-grid code { color: #657385; overflow-wrap: anywhere; }
+.signal-grid strong { text-align: right; font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere; }
+.signal-raw > div { display: block; }
+.signal-raw strong { display: block; text-align: left; margin-top: 3px; }
+.activity-trace { margin-top: 6px; }
+.activity-trace summary { cursor: pointer; color: #657385; font-size: 10px; }
+.chart-card { border: 1px solid var(--line); border-radius: 12px; padding: 18px 19px 7px; }
+.chart-legend { display: flex; gap: 17px; flex-wrap: wrap; font-size: 10px; color: #7c8999; }
+.chart-legend span::before { content: ""; width: 17px; height: 3px; border-radius: 9px;
+  display: inline-block; vertical-align: middle; margin-right: 5px; background: var(--gold); }
+.chart-legend .legend-stop::before { background: var(--red); }
+.chart-legend .legend-target::before { background: #6b9bb0; }
+.price-chart { min-height: 245px; display: grid; place-items: center; color: #8e99a5; font-size: 12px; }
+.price-chart svg { width: 100%; max-height: 250px; overflow: visible; }
+.chart-grid { stroke: #e8ecee; stroke-width: 1; }
+.chart-label { fill: #9ba5b0; font-size: 10px; }
+.chart-line { fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.chart-price { stroke: var(--gold); }
+.chart-stop { stroke: var(--red); stroke-dasharray: 5 4; stroke-width: 1.7; }
+.chart-target { stroke: #6b9bb0; stroke-dasharray: 3 4; stroke-width: 1.5; }
+.chart-point { fill: white; stroke: var(--gold); stroke-width: 2; }
+.chart-close-point { fill: var(--navy); stroke: white; stroke-width: 2.5; }
+.chart-protection-point { fill: white; stroke-width: 2; }
+.chart-stop-point { stroke: var(--red); }
+.chart-target-point { stroke: #6b9bb0; }
+.chart-note { color: #7c8999; font-size: 10px; margin: 0 0 8px; }
+.financial-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px;
+  background: #f7f8f8; border-radius: 10px; padding: 15px 17px; margin: 17px 0 27px; }
+.financial-row strong { display: block; margin-top: 4px; font-size: 15px; font-variant-numeric: tabular-nums; }
+.timeline-title { margin-bottom: 11px; }
+.timeline { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.timeline-event { border-bottom: 1px solid var(--line); }
+.timeline-event:last-child { border-bottom: 0; }
+.timeline-event summary { display: flex; gap: 12px; align-items: center; padding: 13px 16px;
+  cursor: pointer; list-style: none; }
+.timeline-event summary::-webkit-details-marker { display: none; }
+.timeline-event summary:hover { background: #fafbfb; }
+.timeline-icon { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--gold);
+  box-shadow: 0 0 0 4px var(--gold-soft); }
+.timeline-icon.close { background: var(--red); box-shadow: 0 0 0 4px var(--red-soft); }
+.timeline-icon.open { background: var(--green); box-shadow: 0 0 0 4px var(--green-soft); }
+.timeline-primary { flex: 1; min-width: 0; }
+.timeline-primary strong { display: block; font-size: 12px; }
+.timeline-primary small { display: block; font-size: 10px; color: #929ca8; margin-top: 2px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.timeline-prices { text-align: right; min-width: 120px; }
+.timeline-prices strong { display: block; font-size: 12px; font-variant-numeric: tabular-nums; }
+.timeline-prices small { color: #97a0aa; font-size: 10px; }
+.chevron { color: #aab3bc; margin-left: 7px; transition: transform .2s; }
+.timeline-event[open] .chevron { transform: rotate(180deg); }
+.event-expanded { border-top: 1px solid #edf0f2; background: #fcfcfb; padding: 16px 18px 19px 36px; }
+.event-totals { display: flex; gap: 12px 22px; flex-wrap: wrap; font-size: 11px; color: #87919d; }
+.event-totals strong { color: var(--ink); margin-left: 4px; }
+.subheading { font-size: 10px; font-weight: 820; letter-spacing: .12em; color: #a47832;
+  margin: 18px 0 9px; text-transform: uppercase; }
+.context-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; }
+.context-grid div { padding: 8px 10px; background: #fff; border: 1px solid #eceef0; border-radius: 6px;
+  min-width: 0; }
+.context-grid span { display: block; color: #98a1aa; font-size: 9px; }
+.context-grid strong { display: block; margin-top: 2px; font-size: 11px; overflow-wrap: anywhere; }
+.identity-detail { margin-top: 12px; }
+.identity-detail summary { padding: 4px 0; color: #6f7c88; font-size: 11px; cursor: pointer; }
+.identity-detail .context-grid { margin-top: 8px; }
+.activity-tools { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 16px; }
+.activity-tools .search { max-width: 240px; }
+.activity-tools select { min-height: 38px; padding: 8px 12px; border: 1px solid #dce1e5;
+  border-radius: 8px; background: #fff; color: var(--ink); }
+.activity-tools label { display: flex; gap: 7px; align-items: center; color: #677384; font-size: 11px; }
+.activity-caption { color: #9aa4ae; font-size: 11px; margin-bottom: 8px; }
+.activity-list { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.activity-item { display: grid; grid-template-columns: 54px minmax(0, 1fr) 215px; gap: 12px;
+  padding: 11px 14px; border-bottom: 1px solid #edf0f2; align-items: center; }
+.activity-item:last-child { border: 0; }
+.activity-item strong { display: block; font-size: 11px; }
+.activity-item small { display: block; color: #939da9; font-size: 10px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; }
+.activity-seq { color: #a6b0b9; font-size: 10px; }
+.activity-quote { text-align: right; font-size: 11px; font-variant-numeric: tabular-nums; }
+.footer { max-width: 1536px; margin: 0 auto; padding: 0 32px 32px;
+  display: flex; justify-content: space-between; gap: 20px; color: #8e99a4; font-size: 11px; }
+.footer strong { color: #677384; }
+.busy-overlay, .drop-overlay { position: fixed; inset: 0; z-index: 20;
+  background: #0c182bb8; display: grid; place-items: center; padding: 20px; }
+.busy-card, .drop-card { min-width: min(420px, 100%); border: 1px solid #ffffff35;
+  background: #fff; padding: 30px; border-radius: 16px; text-align: center; box-shadow: 0 25px 60px #0004; }
+.busy-card strong, .drop-card strong { display: block; font-size: 18px; }
+.busy-card p, .drop-card p { color: #83909c; margin: 7px 0 0; }
+.spinner { width: 29px; height: 29px; border: 3px solid #ead8b7; border-top-color: var(--gold);
+  border-radius: 50%; animation: spin .8s linear infinite; margin: 0 auto 17px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (max-width: 1080px) {
+  .header-inner { align-items: flex-start; }
+  .privacy-chip { display: none; }
+  .empty-copy { padding: 55px 42px; }
+  .workspace { grid-template-columns: 255px minmax(0, 1fr); }
+  .detail-inner { padding: 18px; }
+  .context-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 760px) {
+  .header-inner { padding: 15px 18px; display: block; }
+  .brand { margin-bottom: 13px; }
+  .header-tools { justify-content: flex-start; }
+  .page { padding: 22px 13px 45px; }
+  .empty-shell { grid-template-columns: 1fr; margin-top: 10px; }
+  .empty-copy { padding: 42px 27px; }
+  .empty-copy .lead { font-size: 15px; }
+  .hero-art { min-height: 340px; padding: 30px; }
+  .dashboard-head { display: block; }
+  .dashboard-head-right { text-align: left; margin-top: 15px; }
+  .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .metric { padding: 15px; min-height: 100px; }
+  .workspace { grid-template-columns: 1fr; }
+  .sidebar { position: static; max-height: 350px; }
+  .trade-facts { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .trade-facts div:nth-child(3) { border-right: 0; }
+  .trade-facts div:nth-child(n+4) { border-top: 1px solid #e7e9eb; }
+  .financial-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .detail-head { display: block; }
+  .net-block { text-align: left; margin-top: 18px; }
+  .activity-item { grid-template-columns: 35px minmax(0, 1fr); }
+  .activity-quote { grid-column: 2; text-align: left; }
+  .footer { display: block; padding: 0 17px 25px; }
+}
+@media (max-width: 470px) {
+  .header-tools .btn { font-size: 11px; padding: 8px 9px; }
+  .brand-name { font-size: 15px; }
+  .trade-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .trade-facts div:nth-child(3) { border-right: 1px solid #e7e9eb; }
+  .trade-facts div:nth-child(2n) { border-right: 0; }
+  .trade-facts div:nth-child(n+3) { border-top: 1px solid #e7e9eb; }
+  .timeline-prices { min-width: 90px; }
+  .context-grid { grid-template-columns: 1fr; }
+  .signal-summary, .signal-grid { grid-template-columns: 1fr; }
+}
+@media print {
+  body { background: #fff; font-size: 11px; }
+  .app-header, .status-line, .sidebar, .detail-tabs, .warning-box,
+  .footer, .btn, .activity-tools, .activity-list, .activity-caption { display: none !important; }
+  .page { padding: 0; }
+  .dashboard-head { margin: 0 0 14px; }
+  .metric-grid { grid-template-columns: repeat(4, 1fr); }
+  .metric { box-shadow: none; padding: 8px; min-height: 0; }
+  .metric strong { font-size: 17px; }
+  .workspace { display: block; }
+  .detail-shell { border: 0; box-shadow: none; }
+  .detail-inner { padding: 0; }
+  .timeline-event { break-inside: avoid; }
+  .timeline-event:not([open]) .event-expanded { display: none; }
+  .chart-card { break-inside: avoid; }
+}
+
+  </style>
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand" aria-label="Gold EA trade activity">
+        <div class="brand-icon" aria-hidden="true">
+          <svg viewBox="0 0 28 28" fill="none"><path d="M3 21.5h22M5 17l5.1-4.8 4.1 2.9L22 6.5" stroke="white" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="22" cy="6.5" r="2" fill="white"/></svg>
+        </div>
+        <div><span class="brand-name">Gold EA</span><span class="brand-caption">TRADE ACTIVITY</span></div>
+      </div>
+      <div class="header-tools">
+        <span class="privacy-chip"><span class="privacy-dot"></span> Private · runs in your browser</span>
+        <label class="btn btn-light" for="activityInput">Open activity log
+          <input class="file-input" id="activityInput" type="file" accept=".log,.txt,text/plain" aria-label="Open Gold EA activity log">
+        </label>
+      </div>
+    </div>
+  </header>
+
+  <main class="page">
+    <div id="statusMessage" class="status-line" role="status" aria-live="polite"></div>
+
+    <section id="emptyState" aria-labelledby="emptyTitle">
+      <div class="empty-shell">
+        <div class="empty-copy">
+          <p class="eyebrow">VIRTUAL TRADING · CLIENT REPORT</p>
+          <h1 id="emptyTitle">Every trade has a story.</h1>
+          <p class="lead">Follow each virtual position from its opening quote through stop changes, take profit, swap and close. See the live market conditions behind every decision.</p>
+          <div class="empty-actions">
+            <label class="btn btn-gold" for="activityInput">Open your activity log</label>
+            <button type="button" class="btn btn-quiet" id="demoButton">Explore a demo</button>
+          </div>
+          <p class="empty-note">
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 2 3.5 5v4.8c0 4.2 2.4 6.9 6.5 8.2 4.1-1.3 6.5-4 6.5-8.2V5L10 2Z" stroke="currentColor" stroke-width="1.5"/><path d="m7.4 10 1.7 1.7 3.7-3.7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            Your files are processed on this device. The tool makes no network request and stores no account data.
+          </p>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <div class="mock-panel">
+            <div class="mock-panel-head"><strong>Trade #104 · XAUUSD</strong><span>ACTIVITY PREVIEW</span></div>
+            <div class="mock-panel-body">
+              <svg viewBox="0 0 400 175" fill="none"><path d="M0 35h400M0 82h400M0 130h400" stroke="#e9edf0"/><path d="M0 138 38 131 73 144 105 112 138 119 172 92 208 102 241 72 277 78 314 45 349 57 400 28" stroke="#bf8b34" stroke-width="3.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M0 154h145l50-43h105l45-29h55" stroke="#bb4a46" stroke-width="2.2" stroke-dasharray="6 5"/><circle cx="314" cy="45" r="5" fill="#bf8b34" stroke="white" stroke-width="3"/></svg>
+            </div>
+            <div class="mock-panel-foot"><span>OPEN → SL MOVED → TRAIL → CLOSE</span><strong>+£54.30</strong></div>
+          </div>
+        </div>
+      </div>
+      <div class="trust-strip"><span>✓ Per-trade timelines</span><span>✓ Bid, Ask and spread at every change</span><span>✓ Configured costs and net P/L</span><span>✓ Checked log chain</span></div>
+    </section>
+
+    <section id="dashboard" hidden aria-label="Virtual trade dashboard">
+      <div class="dashboard-head">
+        <div><p class="eyebrow" id="sourceLabel">VIRTUAL ACTIVITY LOG</p><h1>Trade activity overview</h1>
+          <p id="activityCount">0 activity records</p></div>
+        <div class="dashboard-head-right"><span class="audit-pill" id="integrityLabel">Activity checksum chain checked</span>
+          <span class="run-id" id="runName" title="Run signature"></span></div>
+      </div>
+      <div class="metric-grid">
+        <div class="metric"><span>VIRTUAL BALANCE</span><strong id="balanceValue">£0.00</strong><small>Internal account book</small></div>
+        <div class="metric"><span>CHANGE FROM START</span><strong id="netValue">£0.00</strong><small>Balance versus opening balance</small></div>
+        <div class="metric"><span>TRADES IN THIS LOG</span><strong id="tradeCountValue">0</strong><small id="openCountValue">0 open</small></div>
+        <div class="metric"><span>RECORDED COMMISSION</span><strong id="costValue">£0.00</strong><small id="costSub">Swap £0.00</small></div>
+      </div>
+      <div id="warningBox" class="warning-box" role="note" hidden></div>
+      <div class="workspace">
+        <aside class="sidebar" aria-label="Trade list">
+          <div class="sidebar-head"><h2>Trades</h2>
+            <input id="tradeSearch" class="search" type="search" placeholder="Search trade or signal" aria-label="Search trades">
+            <div class="segmented" aria-label="Trade status filter">
+              <button type="button" class="selected" data-status="all">All</button>
+              <button type="button" data-status="open">Open</button>
+              <button type="button" data-status="closed">Closed</button>
+            </div>
+          </div>
+          <div class="sort-line"><span id="visibleTradeCount">0 shown</span>
+            <select id="sortTrades" aria-label="Sort trades"><option value="newest">Newest first</option><option value="oldest">Oldest first</option><option value="profit">Highest recorded P/L</option></select></div>
+          <div id="tradeList" class="trade-list"></div>
+        </aside>
+
+        <div class="detail-shell">
+          <nav class="detail-tabs" aria-label="Report view">
+            <button type="button" data-view="trade" class="selected" aria-selected="true">Trade detail</button>
+            <button type="button" data-view="activity" aria-selected="false">EA activity</button>
+          </nav>
+          <section id="tradeView" class="detail-inner" aria-label="Selected trade">
+            <div id="tradeDetail"></div>
+          </section>
+          <section id="activityView" class="detail-inner" aria-label="EA activity" hidden>
+            <div class="section-title"><div><p class="eyebrow">COMPLETE RUN</p><h3>EA activity</h3></div></div>
+            <p class="detail-sub" style="margin:8px 0 17px">All meaningful events are listed. Market marks can be included; the latest 250 matching entries are shown at once.</p>
+            <div class="activity-tools">
+              <input id="activitySearch" class="search" type="search" placeholder="Search events" aria-label="Search activity">
+              <select id="activityType" aria-label="Filter activity type"><option value="all">All event types</option><option value="OPEN">Opens</option><option value="MODIFY_SL">Stop changes</option><option value="CLOSE_1">Stop loss closes</option><option value="CLOSE_2">Take profit closes</option><option value="SWAP_ROLLOVER">Swap</option><option value="M5_DECISION">M5 decisions</option><option value="CANDIDATE_EVENT">Signal candidates</option><option value="RECOVERY_GAP">Recovery gaps</option></select>
+              <label><input id="includeMarks" type="checkbox"> Include market marks</label>
+            </div>
+            <p id="activityShown" class="activity-caption"></p>
+            <div id="activityList" class="activity-list"></div>
+          </section>
+        </div>
+      </div>
+      <div style="display:flex; flex-wrap:wrap; justify-content:flex-end; gap:9px; margin-top:18px">
+        <button type="button" class="btn btn-quiet" id="exportCsv" disabled>Download trade CSV</button>
+        <button type="button" class="btn btn-quiet" id="printReport" disabled>Print / Save PDF</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer"><span><strong>Gold EA · Virtual trade activity</strong><br>Virtual results reflect configured internal fills and costs. They are not broker-confirmed trades.</span>
+    <span>Standalone HTML · No account connection · No cloud storage</span></footer>
+
+  <div id="busyOverlay" class="busy-overlay" hidden role="status" aria-live="polite"><div class="busy-card"><div class="spinner"></div><strong>Checking your data</strong><p id="busyText">Reading activity log…</p></div></div>
+  <div id="dropOverlay" class="drop-overlay" hidden aria-hidden="true"><div class="drop-card"><strong>Drop your Gold EA activity log here</strong><p>GoldEA_activity_*.log</p></div></div>
+  <script>
+/* Gold EA client report. No external libraries, storage, or network calls. */
+"use strict";
+
+const ACTIVITY_SCHEMA = "GOLD_ACTIVITY_V1";
+const JOURNAL_SCHEMA = "GOLD_VIRTUAL_BOOK_V3";
+const SHARE_SCHEMA = "GOLD_CLIENT_REPORT_V1";
+const ENVIRONMENT_FIELDS = [
+  "utc_msc", "tick_msc", "bid", "ask", "spread", "spread_points",
+  "point", "tick_size", "stops_points", "freeze_points", "real_balance",
+  "real_equity", "real_positions", "real_orders", "account_login",
+  "account_server", "account_currency", "symbol", "bar_close_utc",
+  "source_complete", "buy_final", "sell_final", "buy_quality",
+  "sell_quality", "last_price", "tick_volume", "tick_volume_real",
+  "tick_flags", "real_credit", "real_trade_mode", "volume_min",
+  "volume_max", "volume_step", "h4_available", "in_session",
+  "hard_block", "live_boundary"
+];
+const INT_ENV = new Set([
+  "utc_msc", "tick_msc", "stops_points", "freeze_points", "real_positions",
+  "real_orders", "bar_close_utc", "tick_volume",
+  "tick_flags", "real_trade_mode"
+]);
+const BOOL_ENV = new Set([
+  "source_complete", "buy_final", "sell_final", "h4_available",
+  "in_session", "hard_block", "live_boundary"
+]);
+const CLOSE_REASONS = {
+  1: "Stop loss", 2: "Take profit", 3: "S2 partial close",
+  4: "Friday close", 5: "Virtual stop out", 6: "Strategy stop"
+};
+
+function fail(message, line) {
+  throw new Error(line ? `Line ${line}: ${message}` : message);
+}
+function integer(value, label, line) {
+  if (!/^-?\d+$/.test(value)) fail(`Invalid ${label}`, line);
+  const number = Number(value);
+  if (!Number.isSafeInteger(number)) fail(`Unsafe ${label}`, line);
+  return number;
+}
+function finite(value, label, line) {
+  if (value === "" || !/^-?\d+(?:\.\d+)?$/.test(value)) fail(`Invalid ${label}`, line);
+  const number = Number(value);
+  if (!Number.isFinite(number)) fail(`Non-finite ${label}`, line);
+  return number;
+}
+function flag(value, label, line) {
+  if (value !== "0" && value !== "1") fail(`Invalid ${label}`, line);
+  return value === "1";
+}
+function fnv32(value) {
+  let hash = 2166136261;
+  for (let i = 0; i < value.length; i += 1) {
+    hash = Math.imul(hash ^ value.charCodeAt(i), 16777619) >>> 0;
+  }
+  return hash;
+}
+function parseEnvironment(value, line) {
+  const parts = value.split(",");
+  if (parts.length !== ENVIRONMENT_FIELDS.length) fail("Environment field count", line);
+  const environment = {};
+  ENVIRONMENT_FIELDS.forEach((name, i) => {
+    environment[name] = name === "account_login" ?
+      (/^\d+$/.test(parts[i]) ? parts[i] : fail("Invalid account login", line))
+      : INT_ENV.has(name) ? integer(parts[i], name, line)
+      : BOOL_ENV.has(name) ? flag(parts[i], name, line)
+      : name === "account_server" || name === "account_currency" || name === "symbol"
+        ? parts[i] : finite(parts[i], name, line);
+  });
+  const spread = environment.ask - environment.bid;
+  if (Math.abs(spread - environment.spread) > 1e-9 * Math.max(1, Math.abs(spread))) {
+    fail("Inconsistent spread", line);
+  }
+  return environment;
+}
+function parseBook(value, line) {
+  const records = value.split(";");
+  const head = records[0].split(",");
+  if (head.length !== 13 || integer(head[11], "position count", line) !== records.length - 1 || records.length > 65) {
+    fail("Book field count", line);
+  }
+  const positions = new Map();
+  for (const record of records.slice(1)) {
+    const p = record.split(",");
+    if (p.length !== 22) fail("Position field count", line);
+    const id = integer(p[3], "trade ID", line);
+    if (id <= 0 || positions.has(id)) fail("Duplicate or invalid trade ID", line);
+    positions.set(id, {
+      active: flag(p[0], "active", line), buy: flag(p[1], "buy", line),
+      halfDone: flag(p[2], "half done", line), id, signalId: p[4],
+      originalVolume: finite(p[5], "original volume", line),
+      volume: finite(p[6], "volume", line),
+      openPrice: finite(p[7], "open price", line),
+      initialSl: finite(p[8], "initial SL", line),
+      sl: finite(p[9], "SL", line), tp: finite(p[10], "TP", line),
+      tp1: finite(p[11], "TP1", line), tp2: finite(p[12], "TP2", line),
+      atr: finite(p[13], "ATR", line),
+      lastExitQuote: finite(p[14], "exit quote", line),
+      closeReason: integer(p[15], "close reason", line),
+      openTickMsc: integer(p[16], "open tick", line),
+      lastTickMsc: integer(p[17], "last tick", line),
+      lastSwapMsc: integer(p[18], "last swap", line),
+      tp1Reached: flag(p[19], "TP1 reached", line),
+      protectionConfirmed: flag(p[20], "protection confirmed", line),
+      bestExitQuote: finite(p[21], "best exit quote", line)
+    });
+  }
+  return {
+    openingBalance: finite(head[0], "opening balance", line),
+    balance: finite(head[1], "balance", line),
+    gross: finite(head[2], "gross", line),
+    commission: finite(head[3], "commission", line),
+    swap: finite(head[4], "swap", line),
+    floating: finite(head[5], "floating", line),
+    equity: finite(head[6], "equity", line),
+    usedMargin: finite(head[7], "used margin", line),
+    freeMargin: finite(head[8], "free margin", line),
+    lastTickMsc: integer(head[9], "last tick", line),
+    nextId: integer(head[10], "next ID", line),
+    faultLocked: flag(head[12], "fault lock", line), positions
+  };
+}
+function iso(ms) {
+  if (!ms || !Number.isFinite(ms)) return "Time unavailable";
+  try { return new Date(ms).toISOString().replace(".000Z", "Z"); }
+  catch { return "Time unavailable"; }
+}
+function near(a, b) { return Math.abs(a - b) <= 1e-9; }
+function snapshotRow(entry, position, kind, detail = "", extras = {}) {
+  const env = entry.environment;
+  return {
+    sequence: entry.sequence, journalSequence: entry.journalSequence,
+    time: env.utc_msc, brokerTick: env.tick_msc, kind, detail,
+    tradeId: position.id, signalId: position.signalId,
+    direction: position.buy ? "BUY" : "SELL",
+    volume: position.volume, closedVolume: extras.closedVolume || 0,
+    openPrice: position.openPrice, eventPrice: extras.eventPrice ?? null,
+    initialSl: position.initialSl, sl: position.sl, tp: position.tp,
+    tp1: position.tp1, tp2: position.tp2,
+    grossDelta: extras.grossDelta || 0,
+    commissionDelta: extras.commissionDelta || 0,
+    swapDelta: extras.swapDelta || 0,
+    environment: env,
+    virtualBalance: entry.book.balance,
+    virtualEquity: entry.book.equity
+  };
+}
+function createTrade(position, recovered) {
+  return {
+    id: position.id, signalId: position.signalId,
+    direction: position.buy ? "BUY" : "SELL",
+    recovered, uncertain: recovered, active: position.active,
+    openPrice: position.openPrice, openTickMsc: position.openTickMsc,
+    openTime: null, closeTime: null, closeReason: null,
+    initialSl: position.initialSl, sl: position.sl, tp: position.tp,
+    tp1: position.tp1, tp2: position.tp2,
+    originalVolume: position.originalVolume, volume: position.volume,
+    gross: 0, commission: 0, swap: 0, net: 0,
+    history: [], samples: [], sampleSeen: 0, sampleStride: 1
+  };
+}
+function addTradeRow(trade, row) {
+  trade.gross += row.grossDelta;
+  trade.commission += row.commissionDelta;
+  trade.swap += row.swapDelta;
+  trade.net = trade.gross - trade.commission + trade.swap;
+  row.grossTotal = trade.gross;
+  row.commissionTotal = trade.commission;
+  row.swapTotal = trade.swap;
+  row.netTotal = trade.net;
+  trade.history.push(row);
+  trade.sl = row.sl; trade.tp = row.tp; trade.volume = row.volume;
+  if (row.kind === "OPEN") trade.openTime = row.time;
+  if (row.kind === "CLOSE" && near(row.volume, 0)) {
+    trade.closeTime = row.time;
+    trade.closeReason = row.detail;
+    trade.active = false;
+  }
+}
+function sampleTrade(trade, entry, position) {
+  trade.sampleSeen += 1;
+  if (trade.sampleSeen % trade.sampleStride !== 0 && entry.event === "MARK") return;
+  const env = entry.environment;
+  trade.samples.push({
+    time: env.utc_msc, price: position.buy ? env.bid : env.ask,
+    bid: env.bid, ask: env.ask, sl: position.sl, tp: position.tp,
+    kind: entry.event
+  });
+  if (trade.samples.length > 1400) {
+    trade.samples = trade.samples.filter((_, i) => i % 2 === 0);
+    trade.sampleStride *= 2;
+  }
+}
+function parseSignalTrace(detail) {
+  if (!detail.startsWith("v=1&")) return null;
+  const fields = Object.fromEntries(new URLSearchParams(detail));
+  const signalMask = Number(fields.signal_gate_state_mask);
+  const qualityMask = Number(fields.quality_contribution_mask);
+  if (fields.v !== "1" || !/^[A-Za-z0-9_-]{1,160}$/.test(fields.key || "") ||
+      fields.origin !== "BROKER_NATIVE" ||
+      !Number.isSafeInteger(Number(fields.bar_close_utc_ms)) ||
+      !Number.isSafeInteger(signalMask) || signalMask < 0 || signalMask > 0xffffffff ||
+      !Number.isSafeInteger(qualityMask) || qualityMask < 0 || qualityMask > 0xfffff) return null;
+  return fields;
+}
+function createActivityParser() {
+  let lineNumber = 0;
+  let previousHash = 0;
+  let signature = null;
+  let previousBook = null;
+  let latestBook = null;
+  let journalSequence = 0;
+  const trades = new Map();
+  const signalTraces = new Map();
+  const pointers = new Map();
+  const rollovers = new Map();
+  const events = [];
+  const warnings = [];
+  let markCount = 0;
+
+  function ensureTrade(position, recovered) {
+    let trade = trades.get(position.id);
+    if (!trade) {
+      trade = createTrade(position, recovered);
+      trades.set(position.id, trade);
+    }
+    if (recovered) trade.uncertain = true;
+    return trade;
+  }
+  function add(entry, position, kind, detail = "", extras = {}) {
+    const trade = ensureTrade(position, kind === "RECOVERED_OPEN" || kind === "RECOVERY_STATE");
+    addTradeRow(trade, snapshotRow(entry, position, kind, detail, extras));
+    return trade;
+  }
+  function push(raw) {
+    if (!raw) return;
+    lineNumber += 1;
+    const fields = raw.replace(/\r$/, "").split("|");
+    if (fields.length !== 12 || fields[0] !== ACTIVITY_SCHEMA || fields[11] !== "END") {
+      fail("Activity schema or terminator", lineNumber);
+    }
+    const sequence = integer(fields[1], "activity sequence", lineNumber);
+    const prev = integer(fields[2], "previous hash", lineNumber);
+    if (sequence !== lineNumber || prev !== previousHash) fail("Activity sequence or hash chain", lineNumber);
+    if (signature === null) signature = fields[3];
+    if (!signature || fields[3] !== signature) fail("Run signature changed", lineNumber);
+    const digest = integer(fields[10], "activity hash", lineNumber);
+    if (fnv32(fields.slice(1, 10).join("|")) !== digest) fail("Activity checksum mismatch", lineNumber);
+    const journalSeq = integer(fields[7], "journal sequence", lineNumber);
+    const journalHash = integer(fields[8], "journal hash", lineNumber);
+    if (journalSeq < 1 || journalSeq < journalSequence) fail("Journal order", lineNumber);
+    if (pointers.has(journalSeq) && pointers.get(journalSeq) !== journalHash) {
+      fail("Journal pointer changed", lineNumber);
+    }
+    pointers.set(journalSeq, journalHash);
+    journalSequence = journalSeq;
+    const entry = {
+      sequence, event: fields[4], detail: fields[5], journalSequence: journalSeq,
+      environment: parseEnvironment(fields[6], lineNumber),
+      book: parseBook(fields[9], lineNumber)
+    };
+    if (sequence === 1 && entry.event !== "EA_START") fail("Missing EA_START", lineNumber);
+    const current = entry.book.positions;
+    const before = previousBook ? previousBook.positions : new Map();
+    if (entry.event === "CANDIDATE_EVENT") {
+      const trace = parseSignalTrace(entry.detail);
+      if (trace) signalTraces.set(trace.key, trace);
+    } else if (entry.event === "EA_START" && !previousBook) {
+      for (const position of current.values()) {
+        if (!position.active) continue;
+        const trade = add(entry, position, "RECOVERED_OPEN", "Open before activity logging began",
+          { eventPrice: position.openPrice });
+        trade.recovered = true;
+        trade.openTime = null;
+      }
+    } else if (entry.event === "OPEN") {
+      const changed = [...current.values()].filter(p => !before.has(p.id) || before.get(p.id).signalId !== p.signalId);
+      if (changed.length !== 1 || !previousBook) fail("Ambiguous OPEN", lineNumber);
+      if (entry.detail.startsWith("signal_key=") &&
+          entry.detail.slice("signal_key=".length) !== changed[0].signalId) {
+        fail("OPEN signal trace key differs from the virtual position", lineNumber);
+      }
+      const trade = add(entry, changed[0], "OPEN", "Virtual fill", {
+        eventPrice: changed[0].openPrice,
+        commissionDelta: entry.book.commission - previousBook.commission
+      });
+      trade.signalTrace = signalTraces.get(changed[0].signalId) || null;
+    } else if (entry.event.startsWith("CLOSE_")) {
+      const changed = [...current.values()].filter(p => before.has(p.id) && p.volume < before.get(p.id).volume - 1e-9);
+      if (changed.length !== 1 || !previousBook) fail("Ambiguous CLOSE", lineNumber);
+      const p = changed[0];
+      const trade = add(entry, p, "CLOSE", CLOSE_REASONS[p.closeReason] || "Close", {
+        eventPrice: p.lastExitQuote,
+        closedVolume: before.get(p.id).volume - p.volume,
+        grossDelta: entry.book.gross - previousBook.gross,
+        commissionDelta: entry.book.commission - previousBook.commission
+      });
+      if (!p.active && p.lastExitQuote > 0) {
+        trade.samples.push({ time: entry.environment.utc_msc, price: p.lastExitQuote,
+          bid: entry.environment.bid, ask: entry.environment.ask,
+          sl: null, tp: null, kind: "CLOSE" });
+      }
+    } else if (entry.event === "SWAP_ROLLOVER") {
+      if (!previousBook) fail("Swap without previous state", lineNumber);
+      const expected = new Set([...current.values()].filter(p =>
+        before.has(p.id) && p.lastSwapMsc !== before.get(p.id).lastSwapMsc).map(p => p.id));
+      rollovers.set(journalSeq, {
+        expected, seen: new Set(),
+        amount: entry.book.swap - previousBook.swap, allocated: 0
+      });
+    } else if (entry.event === "SWAP_ALLOCATION") {
+      const match = /^id:(\d+):gbp:(-?\d+(?:\.\d+)?)$/.exec(entry.detail);
+      if (!match) fail("Invalid swap allocation", lineNumber);
+      const id = integer(match[1], "swap trade ID", lineNumber);
+      const amount = finite(match[2], "swap amount", lineNumber);
+      const rollover = rollovers.get(journalSeq);
+      if (!rollover || !current.has(id) || rollover.seen.has(id)) fail("Unmatched swap allocation", lineNumber);
+      rollover.seen.add(id);
+      rollover.allocated += amount;
+      add(entry, current.get(id), "SWAP", "Rollover", { swapDelta: amount });
+    } else if (entry.event === "TP1_REACHED") {
+      for (const p of current.values()) {
+        if (before.has(p.id) && p.tp1Reached && !before.get(p.id).tp1Reached) {
+          add(entry, p, "TP1_REACHED", "TP1 threshold reached");
+        }
+      }
+    } else if (entry.event === "EXIT_STATE") {
+      for (const p of current.values()) {
+        const old = before.get(p.id);
+        if (old && p.protectionConfirmed !== old.protectionConfirmed &&
+          near(p.sl, old.sl) && near(p.tp, old.tp)) {
+          add(entry, p, "EXIT_STATE", p.protectionConfirmed ?
+            "Protection activated" : "Protection cleared");
+        }
+      }
+    } else if (entry.event === "RECOVERY_GAP") {
+      warnings.push("The virtual journal advanced while activity logging was unavailable. Some trade context is missing.");
+      for (const p of current.values()) {
+        if (!p.active) continue;
+        const trade = add(entry, p, "RECOVERY_STATE", "Earlier activity unavailable");
+        trade.uncertain = true;
+      }
+    }
+    if (previousBook && entry.event !== "OPEN" && entry.event !== "RECOVERY_GAP") {
+      for (const p of current.values()) {
+        const old = before.get(p.id);
+        if (!old) continue;
+        if (!near(p.sl, old.sl)) add(entry, p, "SL_CHANGE", `From ${old.sl}`);
+        if (!near(p.tp, old.tp)) add(entry, p, "TP_CHANGE", `From ${old.tp}`);
+      }
+    }
+    for (const p of current.values()) {
+      const trade = trades.get(p.id);
+      if (trade) {
+        trade.active = p.active;
+        trade.volume = p.volume;
+        trade.sl = p.sl; trade.tp = p.tp;
+        if (p.active && entry.environment.bid > 0 && entry.environment.ask > 0) {
+          sampleTrade(trade, entry, p);
+        }
+      }
+    }
+    if (entry.event === "MARK") markCount += 1;
+    events.push({
+      sequence, journalSequence: journalSeq, time: entry.environment.utc_msc,
+      event: entry.event, detail: entry.detail, bid: entry.environment.bid,
+      ask: entry.environment.ask, spreadPoints: entry.environment.spread_points,
+      environment: entry.event === "MARK" ? null : entry.environment,
+      mark: entry.event === "MARK"
+    });
+    latestBook = entry.book;
+    previousBook = entry.book;
+    previousHash = digest;
+  }
+  function finish() {
+    if (lineNumber === 0 || !latestBook) fail("Activity log is empty");
+    for (const [seq, rollover] of rollovers) {
+      const missing = [...rollover.expected].filter(id => !rollover.seen.has(id));
+      if (missing.length || !near(rollover.amount, rollover.allocated)) {
+        warnings.push(`Rollover at journal ${seq} has missing per-trade swap allocation.`);
+      }
+    }
+    const items = [...trades.values()].sort((a, b) => a.id - b.id);
+    return {
+      schema: SHARE_SCHEMA, source: "activity", signature,
+      activityRecords: lineNumber, markCount, journalSequence,
+      openingBalance: latestBook.openingBalance,
+      balance: latestBook.balance, equity: latestBook.equity,
+      realisedGross: latestBook.gross, commission: latestBook.commission,
+      swap: latestBook.swap, floating: latestBook.floating,
+      faultLocked: latestBook.faultLocked,
+      trades: items, events, warnings,
+      integrity: { activity: "verified", journal: "not supplied" },
+      journalPointers: [...pointers.entries()]
+    };
+  }
+  return { push, finish };
+}
+
+function parseActivityText(text) {
+  const parser = createActivityParser();
+  const lines = text.split("\n");
+  for (const line of lines) parser.push(line);
+  return parser.finish();
+}
+async function* blobLines(blob, onProgress) {
+  const reader = blob.stream().getReader();
+  const decoder = new TextDecoder("windows-1252");
+  let pending = "";
+  let consumed = 0;
+  while (true) {
+    const { value, done } = await reader.read();
+    if (done) break;
+    consumed += value.byteLength;
+    pending += decoder.decode(value, { stream: true });
+    let split;
+    while ((split = pending.indexOf("\n")) >= 0) {
+      yield pending.slice(0, split);
+      pending = pending.slice(split + 1);
+    }
+    if (pending.length > 2_000_000) fail("A record exceeds the supported line length");
+    if (onProgress) onProgress(consumed, blob.size);
+  }
+  pending += decoder.decode();
+  if (pending) yield pending;
+}
+async function parseActivityFile(file, onProgress) {
+  const parser = createActivityParser();
+  for await (const line of blobLines(file, onProgress)) parser.push(line);
+  return parser.finish();
+}
+async function verifyJournalFile(report, file, onProgress) {
+  if (!report || report.source !== "activity") fail("Load an activity log first");
+  const required = new Map(report.journalPointers);
+  let previousHash = 0;
+  let signature = null;
+  let count = 0;
+  for await (const raw of blobLines(file, onProgress)) {
+    if (!raw) continue;
+    count += 1;
+    const fields = raw.replace(/\r$/, "").split("|");
+    if (fields.length !== 8 || fields[0] !== JOURNAL_SCHEMA || fields[7] !== "END") {
+      fail("Journal schema or terminator", count);
+    }
+    const sequence = integer(fields[1], "journal sequence", count);
+    const prior = integer(fields[2], "previous hash", count);
+    const digest = integer(fields[6], "journal hash", count);
+    if (sequence !== count || prior !== previousHash ||
+      fnv32(fields.slice(1, 6).join("|")) !== digest) {
+      fail("Journal chain or checksum", count);
+    }
+    if (signature === null) signature = fields[3];
+    if (signature !== report.signature || fields[3] !== signature) {
+      fail("Journal run signature differs from activity log", count);
+    }
+    if (required.has(sequence)) {
+      if (required.get(sequence) !== digest) fail("Activity pointer differs from journal", count);
+      required.delete(sequence);
+    }
+    previousHash = digest;
+  }
+  if (count === 0 || required.size) fail("Journal is missing activity-linked records");
+  if (count > report.journalSequence) {
+    report.warnings.push("The journal has newer records than the activity log. Refresh the activity file or inspect a logging gap.");
+  }
+  report.integrity.journal = "verified";
+  return report;
+}
+
+function clientSnapshot(report) {
+  const clone = JSON.parse(JSON.stringify(report));
+  clone.source = "client snapshot";
+  clone.events = clone.events.filter(event => !event.mark);
+  clone.integrity = {
+    activity: "verified at export", journal: report.integrity.journal,
+    note: "The source files are not included in this share copy."
+  };
+  delete clone.journalPointers;
+  for (const trade of clone.trades || []) {
+    for (const row of trade.history || []) {
+      if (row.environment) {
+        delete row.environment.account_login;
+        delete row.environment.account_server;
+      }
+    }
+  }
+  for (const event of clone.events || []) {
+    if (event.environment) {
+      delete event.environment.account_login;
+      delete event.environment.account_server;
+    }
+  }
+  return clone;
+}
+function parseClientSnapshot(text) {
+  let result;
+  try { result = JSON.parse(text); } catch { fail("Client report JSON is invalid"); }
+  if (!result || result.schema !== SHARE_SCHEMA || !Array.isArray(result.trades) ||
+      !Array.isArray(result.events) || !result.integrity ||
+      typeof result.integrity !== "object") {
+    fail("This is not a Gold EA client report");
+  }
+  for (const trade of result.trades) {
+    if (!trade || !Number.isSafeInteger(trade.id) || trade.id < 1 ||
+        !["BUY", "SELL"].includes(trade.direction) ||
+        typeof trade.signalId !== "string" || !Array.isArray(trade.history) ||
+        !Array.isArray(trade.samples) ||
+        !trade.history.every(row => row && typeof row.kind === "string" &&
+          typeof row.detail === "string" &&
+          (!row.environment || typeof row.environment === "object")) ||
+        !trade.samples.every(sample => sample && typeof sample === "object")) {
+      fail("Client report contains an invalid trade");
+    }
+  }
+  if (!result.events.every(event => event && Number.isSafeInteger(event.sequence) &&
+      typeof event.event === "string" && typeof event.detail === "string")) {
+    fail("Client report contains an invalid event");
+  }
+  result.source = "client snapshot";
+  result.journalPointers = [];
+  return result;
+}
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = {
+    fnv32, parseActivityText, parseActivityFile, verifyJournalFile,
+    clientSnapshot, parseClientSnapshot, createActivityParser
+  };
+}
+
+function money(value, digits = 2) {
+  return new Intl.NumberFormat("en-GB", {
+    style: "currency", currency: "GBP", minimumFractionDigits: digits,
+    maximumFractionDigits: digits
+  }).format(Number(value) || 0);
+}
+function price(value) {
+  return value === null || value === undefined || Number(value) === 0
+    ? "—" : Number(value).toFixed(2);
+}
+function compactTime(value) {
+  if (!value) return "Time unavailable";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "Time unavailable";
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "2-digit", month: "short", year: "numeric",
+    hour: "2-digit", minute: "2-digit", second: "2-digit",
+    timeZone: "UTC", hour12: false
+  }).format(date) + " UTC";
+}
+function h(value) {
+  return String(value ?? "").replace(/[&<>"']/g, character => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;",
+    '"': "&quot;", "'": "&#39;"
+  })[character]);
+}
+function csvCell(value) {
+  let text = String(value ?? "");
+  if (typeof value === "string" && /^[=+\-@\t\r]/.test(text)) text = "'" + text;
+  return '"' + text.replaceAll('"', '""') + '"';
+}
+function download(name, content, mime) {
+  const blob = new Blob([content], { type: mime });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url; anchor.download = name;
+  document.body.append(anchor);
+  anchor.click(); anchor.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
+}
+function tradeCsv(report) {
+  const columns = [
+    "trade_id", "signal_id", "direction", "event", "time_utc", "detail",
+    "volume", "closed_volume", "open_price", "event_price", "sl", "tp",
+    "tp1", "tp2", "bid", "ask", "spread", "spread_points",
+    "gross_delta_gbp", "commission_delta_gbp", "swap_delta_gbp",
+    "gross_total_gbp", "commission_total_gbp", "swap_total_gbp",
+    "net_total_gbp", "virtual_balance_gbp", "virtual_equity_gbp"
+  ];
+  const rows = [columns.join(",")];
+  for (const trade of report.trades) {
+    for (const row of trade.history) {
+      const env = row.environment || {};
+      const item = [
+        trade.id, trade.signalId, trade.direction, row.kind, iso(row.time),
+        row.detail, row.volume, row.closedVolume, row.openPrice,
+        row.eventPrice ?? "", row.sl, row.tp, row.tp1, row.tp2,
+        env.bid ?? "", env.ask ?? "", env.spread ?? "", env.spread_points ?? "",
+        row.grossDelta, row.commissionDelta, row.swapDelta,
+        row.grossTotal, row.commissionTotal, row.swapTotal,
+        row.netTotal, row.virtualBalance, row.virtualEquity
+      ];
+      rows.push(item.map(csvCell).join(","));
+    }
+  }
+  return rows.join("\r\n") + "\r\n";
+}
+function demoReport() {
+  const base = Date.UTC(2026, 9, 7, 12, 10, 0);
+  function env(time, bid, ask) {
+    return {
+      utc_msc: time, tick_msc: time + 10800000,
+      bid, ask, spread: ask - bid,
+      spread_points: Math.round((ask - bid) * 100), point: 0.01,
+      tick_size: 0.01, real_balance: 0, real_equity: 0,
+      account_currency: "GBP", symbol: "XAUUSD",
+      bar_close_utc: Math.floor(time / 1000), source_complete: true,
+      h4_available: true, in_session: true, hard_block: false,
+      live_boundary: true
+    };
+  }
+  function demoTrade(id, direction, signalId, openPrice, initialSl, tp, rows) {
+    const trade = {
+      id, direction, signalId, recovered: false, uncertain: false,
+      active: false, openPrice, initialSl, sl: rows.at(-1).sl, tp,
+      tp1: direction === "BUY" ? openPrice + 7 : openPrice - 7,
+      tp2: direction === "BUY" ? openPrice + 12 : openPrice - 12,
+      originalVolume: 0.05, volume: 0,
+      openTime: rows[0].time, closeTime: rows.at(-1).time,
+      closeReason: rows.at(-1).detail,
+      gross: 0, commission: 0, swap: 0, net: 0,
+      history: [], samples: []
+    };
+    for (const data of rows) {
+      const row = {
+        sequence: data.sequence, journalSequence: data.sequence,
+        tradeId: id, signalId, direction, kind: data.kind,
+        detail: data.detail || "", time: data.time,
+        brokerTick: data.time + 10800000, volume: data.volume,
+        closedVolume: data.closedVolume || 0,
+        openPrice, eventPrice: data.eventPrice ?? null,
+        initialSl, sl: data.sl, tp: data.tp ?? tp,
+        tp1: trade.tp1, tp2: trade.tp2,
+        grossDelta: data.gross || 0,
+        commissionDelta: data.commission || 0,
+        swapDelta: data.swap || 0,
+        environment: env(data.time, data.bid, data.ask),
+        virtualBalance: data.balance || 5000,
+        virtualEquity: data.balance || 5000
+      };
+      addTradeRow(trade, row);
+      trade.samples.push({ time: row.time,
+        price: direction === "BUY" ? data.bid : data.ask,
+        bid: data.bid, ask: data.ask, sl: row.sl, tp: row.tp,
+        kind: row.kind });
+    }
+    return trade;
+  }
+  const first = demoTrade(1, "BUY", "S4-example-buy", 4120.00, 4110.00, 0, [
+    { sequence: 2, kind: "OPEN", time: base, bid: 4119.78, ask: 4120,
+      volume: .05, sl: 4110, eventPrice: 4120, commission: .35 },
+    { sequence: 4, kind: "TP1_REACHED", time: base + 6*60000,
+      bid: 4127.20, ask: 4127.42, volume: .05, sl: 4110 },
+    { sequence: 5, kind: "SL_CHANGE", detail: "From 4110.00",
+      time: base + 6*60000 + 1000, bid: 4127.20, ask: 4127.42,
+      volume: .05, sl: 4127 },
+    { sequence: 8, kind: "SL_CHANGE", detail: "From 4127.00",
+      time: base + 9*60000, bid: 4131.80, ask: 4132.02,
+      volume: .05, sl: 4127.80 },
+    { sequence: 10, kind: "CLOSE", detail: "Stop loss",
+      time: base + 13*60000, bid: 4127.70, ask: 4127.92,
+      volume: 0, closedVolume: .05, sl: 4127.80,
+      eventPrice: 4127.70, gross: 38.5, commission: .35, balance: 5037.8 }
+  ]);
+  const secondBase = base + 4*3600000;
+  const second = demoTrade(2, "SELL", "S3-example-sell", 4130.10, 4140.10, 4118.10, [
+    { sequence: 12, kind: "OPEN", time: secondBase,
+      bid: 4130.10, ask: 4130.32, volume: .05, sl: 4140.10,
+      eventPrice: 4130.10, commission: .35, balance: 5037.45 },
+    { sequence: 16, kind: "SL_CHANGE", detail: "From 4140.10",
+      time: secondBase + 15*60000, bid: 4122.80, ask: 4123.02,
+      volume: .05, sl: 4123.10 },
+    { sequence: 18, kind: "SWAP", detail: "Rollover",
+      time: secondBase + 3600000, bid: 4121.00, ask: 4121.22,
+      volume: .05, sl: 4123.10, swap: -.30, balance: 5037.15 },
+    { sequence: 21, kind: "CLOSE", detail: "Take profit",
+      time: secondBase + 2*3600000, bid: 4117.90, ask: 4118.10,
+      volume: 0, closedVolume: .05, sl: 4123.10,
+      eventPrice: 4118.10, gross: 60, commission: .35, balance: 5096.8 }
+  ]);
+  return {
+    schema: SHARE_SCHEMA, source: "demo", signature: "SYNTHETIC_DEMO_ONLY",
+    activityRecords: 21, markCount: 7, journalSequence: 21,
+    openingBalance: 5000, balance: 5096.8, equity: 5096.8,
+    realisedGross: 98.5, commission: 1.4, swap: -.30,
+    floating: 0, faultLocked: false,
+    trades: [first, second], events: [
+      { sequence: 1, time: base, event: "EA_START", detail: "Demo run",
+        bid: 4119.78, ask: 4120, spreadPoints: 22 },
+      ...[first, second].flatMap(trade => trade.history.map(row => ({
+        sequence: row.sequence, time: row.time, event: row.kind,
+        detail: row.detail, bid: row.environment.bid,
+        ask: row.environment.ask,
+        spreadPoints: row.environment.spread_points
+      })))
+    ].sort((a, b) => a.sequence - b.sequence),
+    warnings: ["This is illustrative data. It is not a real trading result."],
+    integrity: { activity: "demo", journal: "demo" }, journalPointers: []
+  };
+}
+
+function renderChart(container, trade) {
+  container.replaceChildren();
+  const data = trade.samples?.length ? trade.samples : trade.history.map(row => ({
+    time: row.time,
+    price: trade.direction === "BUY" ? row.environment?.bid : row.environment?.ask,
+    sl: row.sl, tp: row.tp, kind: row.kind
+  }));
+  const points = data.filter(item => item && Number.isFinite(item.price) && item.price > 0);
+  if (points.length < 2) {
+    container.textContent = "The price chart will appear when this trade has at least two recorded market observations.";
+    container.classList.add("chart-empty");
+    return;
+  }
+  container.classList.remove("chart-empty");
+  const width = 840, height = 260, left = 58, right = 22, top = 18, bottom = 34;
+  const vals = points.flatMap(item => [item.price, item.sl, item.tp].filter(v => Number.isFinite(v) && v > 0));
+  let min = Math.min(...vals), max = Math.max(...vals);
+  const padding = Math.max((max - min) * .1, .2);
+  min -= padding; max += padding;
+  const first = points[0].time || 0;
+  const last = points.at(-1).time || first + 1;
+  const x = item => left + ((item.time - first) / Math.max(last - first, 1)) * (width - left - right);
+  const y = value => top + ((max - value) / (max - min)) * (height - top - bottom);
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+  svg.setAttribute("role", "img");
+  svg.setAttribute("aria-label", `Price, stop loss and take profit for trade ${trade.id}`);
+  function shape(tag, attributes, content) {
+    const element = document.createElementNS("http://www.w3.org/2000/svg", tag);
+    for (const [key, value] of Object.entries(attributes)) element.setAttribute(key, String(value));
+    if (content !== undefined) element.textContent = content;
+    svg.append(element);
+    return element;
+  }
+  for (let i = 0; i < 4; i += 1) {
+    const value = min + (max - min) * i / 3;
+    const yy = y(value);
+    shape("line", { x1: left, y1: yy, x2: width - right, y2: yy, class: "chart-grid" });
+    shape("text", { x: left - 10, y: yy + 4, "text-anchor": "end", class: "chart-label" }, value.toFixed(1));
+  }
+  const series = [
+    ["price", item => item.price],
+    ["stop", item => item.kind === "CLOSE" ? null : item.sl],
+    ["target", item => item.kind === "CLOSE" ? null : item.tp]
+  ];
+  for (const [name, getter] of series) {
+    let segment = [];
+    function flush() {
+      if (segment.length > 1) {
+        shape("polyline", { points: segment.map(item => `${x(item)},${y(getter(item))}`).join(" "),
+          class: `chart-line chart-${name}` });
+      }
+      segment = [];
+    }
+    for (const item of points) {
+      const value = getter(item);
+      if (!Number.isFinite(value) || value <= 0) {
+        flush();
+        continue;
+      }
+      if (name !== "price" && segment.length && !near(value, getter(segment.at(-1)))) {
+        flush();
+        const marker = shape("circle", { cx: x(item), cy: y(value), r: 3,
+          class: `chart-protection-point chart-${name}-point` });
+        const title = document.createElementNS("http://www.w3.org/2000/svg", "title");
+        title.textContent = `${compactTime(item.time)} · ${name === "stop" ? "Stop loss" : "Take profit"} changed to ${price(value)}`;
+        marker.append(title);
+      }
+      segment.push(item);
+    }
+    flush();
+  }
+  for (const item of points.filter(p => p.kind !== "MARK").slice(-80)) {
+    const circle = shape("circle", { cx: x(item), cy: y(item.price), r: item.kind === "CLOSE" ? 5 : 3.8,
+      class: item.kind === "CLOSE" ? "chart-point chart-close-point" : "chart-point" });
+    const title = document.createElementNS("http://www.w3.org/2000/svg", "title");
+    title.textContent = `${compactTime(item.time)} · ${item.kind} · ${price(item.price)}`;
+    circle.append(title);
+  }
+  shape("text", { x: left, y: height - 8, class: "chart-label" }, compactTime(first));
+  shape("text", { x: width - right, y: height - 8, "text-anchor": "end", class: "chart-label" }, compactTime(last));
+  container.append(svg);
+}
+
+const SIGNAL_GATE_BITS = [
+  "BUY STC oversold state", "BUY STC pass", "SELL STC pass", "BUY RSI pass",
+  "SELL RSI pass", "Body pass", "In session", "Trend filter pass",
+  "Hard block", "At point of interest", "BUY candidate raw", "BUY confirming bar",
+  "BUY body held", "SELL candidate raw", "SELL confirming bar", "SELL body held",
+  "Continuation SELL candidate raw", "Continuation SELL confirming bar",
+  "Continuation SELL body held", "BUY signal", "SELL signal",
+  "Continuation SELL signal", "BUY final", "SELL final", "BUY suppressed",
+  "SELL suppressed", "Secondary BUY", "Secondary SELL", "Grind BUY raw",
+  "Grind SELL raw", "Grind BUY", "Grind SELL"
+];
+const QUALITY_BITS = [
+  "BUY near EMA21", "BUY near round number", "BUY near session low", "BUY M1 bullish",
+  "BUY bullish engulfing", "BUY STC below 25", "BUY RSI 40–60",
+  "BUY near support", "BUY volume surge", "BUY absorption (+2)",
+  "SELL near EMA21", "SELL near round number", "SELL near session high",
+  "SELL M1 bearish", "SELL bearish engulfing", "SELL STC above 75",
+  "SELL RSI 40–60", "SELL near resistance", "SELL volume surge",
+  "SELL absorption (+2)"
+];
+const SIGNAL_PATHS = {
+  1: "Primary BUY", 2: "Primary SELL flip", 3: "Continuation SELL",
+  4: "Secondary BUY", 5: "Secondary SELL", 6: "Grind BUY", 7: "Grind SELL"
+};
+const SIGNAL_REASONS = {
+  1: "Executable primary, 3 stars", 10: "Executable continuation, 3 stars",
+  11: "Executable secondary, 3 stars", 12: "Executable grind, 3 stars"
+};
+function renderSignalTrace(trade) {
+  const trace = trade.signalTrace;
+  if (!trace) return `<section class="signal-card"><p class="eyebrow">SIGNAL DECISION</p>
+    <h3>Detailed trace unavailable</h3><p>This activity log predates trade-linked signal tracing, or this trade was recovered after its signal record.</p></section>`;
+  const fieldRows = Object.entries(trace).map(([key, value]) =>
+    `<div><code>${h(key)}</code><strong>${h(value)}</strong></div>`).join("");
+  function maskRows(names, value) {
+    const mask = Number(value);
+    return names.map((name, bit) => `<div><span>${h(name)}</span>
+      <strong class="${mask & (1 << bit) ? "positive" : ""}">${mask & (1 << bit) ? "Yes" : "No"}</strong></div>`).join("");
+  }
+  const quality = trade.direction === "BUY" ? trace.buy_quality : trace.sell_quality;
+  const stars = trade.direction === "BUY" ? trace.buy_stars : trace.sell_stars;
+  const path = SIGNAL_PATHS[trace.signal_path] || `Path ${trace.signal_path || "unknown"}`;
+  return `<section class="signal-card"><p class="eyebrow">SIGNAL DECISION</p>
+    <h3>Why this trade was created</h3>
+    <p class="signal-note">Native EA calculation from broker M5 tick volume. Compare with TradingView by confirmed M5 close; COMEX inputs are not used by this EA. TradingView's observation gate mask corresponds to the native input gate mask ${h(trace.observation_gate_mask ?? "unavailable")}; the EA's full decision mask is ${h(trace.signal_gate_state_mask)}.</p>
+    <div class="signal-summary">
+      <div><span>Confirmed M5 close</span><strong>${h(compactTime(Number(trace.bar_close_utc_ms)))}</strong></div>
+      <div><span>Signal path</span><strong>${h(path)}</strong></div>
+      <div><span>${trade.direction} quality</span><strong>${h(quality)} points · ${h(stars)} stars</strong></div>
+      <div><span>EA decision</span><strong>${h(SIGNAL_REASONS[trace.signal_reason] || `Reason ${trace.signal_reason || "unknown"}`)}</strong></div>
+      <div><span>Candidate registration</span><strong>${trace.registration_transition === "3" ? "Replaced opposite" : "Registered"}</strong></div>
+    </div>
+    <details class="signal-expand"><summary>Decision gates and result</summary>
+      <p>Native signal mask ${h(trace.signal_gate_state_mask)}. This full 32-bit result mask has a different scope from the shorter TradingView observation gate mask.</p>
+      <div class="signal-grid">${maskRows(SIGNAL_GATE_BITS, trace.signal_gate_state_mask)}</div></details>
+    <details class="signal-expand"><summary>Quality score components</summary>
+      <p>Contribution mask ${h(trace.quality_contribution_mask)}; an absorption component contributes two points.</p>
+      <div class="signal-grid">${maskRows(QUALITY_BITS, trace.quality_contribution_mask)}</div></details>
+    <details class="signal-expand"><summary>All recorded native values for comparison</summary>
+      <div class="signal-grid signal-raw">${fieldRows}</div></details>
+  </section>`;
+}
+
+function initDashboard() {
+  if (typeof document === "undefined") return;
+  const $ = id => document.getElementById(id);
+  const state = { report: null, selectedId: null, view: "trade", status: "all", sort: "newest" };
+  const activityInput = $("activityInput");
+  function announce(message, isError = false) {
+    const element = $("statusMessage");
+    element.textContent = message;
+    element.classList.toggle("error", isError);
+  }
+  function busy(value) {
+    $("busyOverlay").hidden = !value;
+    document.body.classList.toggle("is-busy", value);
+  }
+  function setReport(report) {
+    state.report = report;
+    state.selectedId = report.trades.at(-1)?.id ?? null;
+    state.view = "trade";
+    $("emptyState").hidden = true;
+    $("dashboard").hidden = false;
+    $("exportCsv").disabled = false;
+    $("printReport").disabled = false;
+    renderAll();
+  }
+  function renderAll() {
+    const report = state.report;
+    if (!report) return;
+    $("runName").textContent = report.source === "demo" ? "Illustrative demo" :
+      report.signature || "Shared client report";
+    $("sourceLabel").textContent = report.source === "demo" ? "DEMO DATA" :
+      report.source === "client snapshot" ? "SHARED REPORT" : "VIRTUAL ACTIVITY LOG";
+    $("integrityLabel").textContent = report.source === "demo" ? "Illustrative only" :
+      "Activity checksum chain checked";
+    $("balanceValue").textContent = money(report.balance);
+    const change = report.balance - report.openingBalance;
+    $("netValue").textContent = money(change);
+    $("netValue").classList.toggle("negative", change < 0);
+    $("netValue").classList.toggle("positive", change >= 0);
+    $("tradeCountValue").textContent = String(report.trades.length);
+    $("openCountValue").textContent = `${report.trades.filter(t => t.active).length} open`;
+    $("costValue").textContent = money(report.commission);
+    $("costSub").textContent = `Swap ${money(report.swap)}`;
+    $("activityCount").textContent = `${Number(report.activityRecords || 0).toLocaleString("en-GB")} activity records · ${Number(report.markCount || 0).toLocaleString("en-GB")} price marks`;
+    const notes = [...new Set(report.warnings || [])];
+    $("warningBox").hidden = notes.length === 0;
+    $("warningBox").replaceChildren(...notes.map(note => {
+      const paragraph = document.createElement("p"); paragraph.textContent = note; return paragraph;
+    }));
+    document.querySelectorAll("[data-view]").forEach(button => {
+      button.classList.toggle("selected", button.dataset.view === state.view);
+      button.setAttribute("aria-selected", String(button.dataset.view === state.view));
+    });
+    $("tradeView").hidden = state.view !== "trade";
+    $("activityView").hidden = state.view !== "activity";
+    renderTrades();
+    renderTradeDetail();
+    renderActivity();
+  }
+  function filteredTrades() {
+    const query = $("tradeSearch").value.trim().toLowerCase();
+    const trades = state.report.trades.filter(trade => {
+      if (state.status === "open" && !trade.active) return false;
+      if (state.status === "closed" && trade.active) return false;
+      if (!query) return true;
+      return String(trade.id).includes(query) ||
+        trade.signalId.toLowerCase().includes(query) ||
+        trade.direction.toLowerCase().includes(query);
+    });
+    trades.sort((a, b) => state.sort === "oldest" ? a.id - b.id :
+      state.sort === "profit" ? b.net - a.net : b.id - a.id);
+    return trades;
+  }
+  function renderTrades() {
+    const container = $("tradeList");
+    const trades = filteredTrades();
+    $("visibleTradeCount").textContent = `${trades.length} shown`;
+    if (!trades.length) {
+      container.innerHTML = '<p class="empty-list">No trades match these filters.</p>';
+      return;
+    }
+    container.innerHTML = trades.map(trade => `
+      <button type="button" class="trade-card ${trade.id === state.selectedId ? "active" : ""}"
+        data-trade-id="${trade.id}" aria-current="${trade.id === state.selectedId}">
+        <span class="trade-card-top"><span class="direction ${trade.direction.toLowerCase()}">${trade.direction}</span>
+          <span class="trade-num">Trade #${trade.id}</span></span>
+        <strong>${h(trade.signalId)}</strong>
+        <span class="trade-card-times">
+          <span><span>Opened</span><span>${trade.openTime ? h(compactTime(trade.openTime)) : "Before logging began"}</span></span>
+          <span><span>Closed</span><span>${trade.closeTime ? h(compactTime(trade.closeTime)) : trade.active ? "Still open" : "Time unavailable"}</span></span>
+        </span>
+        <span class="trade-card-bottom"><span>${trade.active ? "Open" : "Closed"}${trade.recovered ? " · recovered" : ""}</span>
+          <span class="${trade.net < 0 ? "negative" : "positive"}">${money(trade.net)}</span></span>
+      </button>`).join("");
+  }
+  function detailPairs(env) {
+    const entries = [
+      ["Bid", price(env.bid)], ["Ask", price(env.ask)],
+      ["Spread", price(env.spread)], ["Spread points", String(env.spread_points ?? "—")],
+      ["Last price", price(env.last_price)],
+      ["Tick volume", String(env.tick_volume ?? "—")],
+      ["Symbol", env.symbol || "—"], ["Account currency", env.account_currency || "—"],
+      ["Real account balance", money(env.real_balance)],
+      ["Real account equity", money(env.real_equity)],
+      ["Real positions", String(env.real_positions ?? "—")],
+      ["Real orders", String(env.real_orders ?? "—")],
+      ["Point", String(env.point ?? "—")], ["Tick size", String(env.tick_size ?? "—")],
+      ["Stops level", String(env.stops_points ?? "—")],
+      ["Freeze level", String(env.freeze_points ?? "—")],
+      ["M5 close UTC", env.bar_close_utc ? iso(env.bar_close_utc * 1000) : "—"],
+      ["Source complete", env.source_complete ? "Yes" : "No"],
+      ["H4 available", env.h4_available ? "Yes" : "No"],
+      ["Session active", env.in_session ? "Yes" : "No"],
+      ["Hard block", env.hard_block ? "Yes" : "No"],
+      ["Live boundary", env.live_boundary ? "Yes" : "No"]
+    ];
+    return entries.map(([key, value]) => `<div><span>${h(key)}</span><strong>${h(value)}</strong></div>`).join("");
+  }
+  function renderTradeDetail() {
+    const report = state.report;
+    const trade = report.trades.find(item => item.id === state.selectedId);
+    if (!trade) {
+      $("tradeDetail").innerHTML = '<div class="no-selection">Choose a trade from the list to inspect its history.</div>';
+      return;
+    }
+    const history = [...trade.history].sort((a, b) => b.sequence - a.sequence);
+    $("tradeDetail").innerHTML = `
+      <div class="detail-head">
+        <div><p class="eyebrow">TRADE #${trade.id} · ${h(trade.active ? "OPEN" : "CLOSED")}</p>
+          <h2><span class="direction ${trade.direction.toLowerCase()}">${trade.direction}</span>
+            ${h(trade.signalId)}</h2>
+          <p class="detail-sub">${trade.recovered ? "Recovered from an earlier journal · earlier fees and quote history may be missing" :
+            `Opened ${h(compactTime(trade.openTime))}`}${trade.closeTime ?
+              ` · Closed ${h(compactTime(trade.closeTime))} at ${price(trade.history.filter(row => row.kind === "CLOSE").at(-1)?.eventPrice)} · ${h(trade.closeReason || "Close")}` : ""}</p></div>
+        <div class="net-block"><span>Recorded net P/L</span><strong class="${trade.net < 0 ? "negative" : "positive"}">${money(trade.net)}</strong>
+          <small>${trade.uncertain ? "Since activity logging began" : "For this trade"}</small></div>
+      </div>
+      <div class="trade-facts">
+        <div><span>Entry</span><strong>${price(trade.openPrice)}</strong></div>
+        <div><span>Initial SL</span><strong>${price(trade.initialSl)}</strong></div>
+        <div><span>${trade.active ? "Current SL" : "SL at close"}</span><strong>${price(trade.sl)}</strong></div>
+        <div><span>${trade.active ? "Current TP" : "Fixed TP"}</span><strong>${trade.tp > 0 ? price(trade.tp) : "None"}</strong></div>
+        <div><span>Size</span><strong>${Number(trade.originalVolume).toFixed(2)} lots</strong></div>
+      </div>
+      ${renderSignalTrace(trade)}
+      <div class="chart-card"><div class="section-title"><div><p class="eyebrow">TRADE PRICE CONTEXT</p><h3>Price and protection</h3></div>
+        <div class="chart-legend"><span class="legend-price">Price</span><span class="legend-stop">Stop loss</span><span class="legend-target">Take profit</span></div></div>
+        <div id="priceChart" class="price-chart"></div>
+        <p class="chart-note">Protection lines show levels while the trade was open${trade.closeTime ? "; the larger price dot marks the close" : ""}.</p></div>
+      <div class="financial-row">
+        <div><span>Realised gross</span><strong>${money(trade.gross)}</strong></div>
+        <div><span>Commission</span><strong>${money(trade.commission)}</strong></div>
+        <div><span>Swap</span><strong>${money(trade.swap)}</strong></div>
+        <div><span>Recorded net</span><strong class="${trade.net < 0 ? "negative" : "positive"}">${money(trade.net)}</strong></div>
+      </div>
+      <div class="section-title timeline-title"><div><p class="eyebrow">AUDIT TRAIL</p><h3>Trade timeline</h3></div>
+        <span>${history.length} meaningful events</span></div>
+      <div class="timeline">${history.map(row => {
+        const env = row.environment || {};
+        return `<details class="timeline-event">
+          <summary><span class="timeline-icon ${h(row.kind.toLowerCase())}"></span>
+            <span class="timeline-primary"><strong>${h(row.kind.replaceAll("_", " "))}</strong>
+              <small>${h(compactTime(row.time))}${row.detail ? ` · ${h(row.detail)}` : ""}</small></span>
+            <span class="timeline-prices"><strong>${row.eventPrice == null ?
+              `${price(env.bid)} / ${price(env.ask)}` : price(row.eventPrice)}</strong>
+              <small>SL ${price(row.sl)} · TP ${price(row.tp)}</small></span>
+            <span class="chevron">⌄</span></summary>
+          <div class="event-expanded"><div class="event-totals">
+            <div>Volume <strong>${Number(row.volume).toFixed(2)} lots</strong></div>
+            <div>Closed <strong>${Number(row.closedVolume).toFixed(2)} lots</strong></div>
+            <div>Commission to date <strong>${money(row.commissionTotal)}</strong></div>
+            <div>Swap to date <strong>${money(row.swapTotal)}</strong></div>
+            <div>Net to date <strong>${money(row.netTotal)}</strong></div>
+          </div><p class="subheading">Environment at this event</p>
+          <div class="context-grid">${detailPairs(env)}</div>
+          <details class="identity-detail"><summary>Account identifiers</summary>
+            <div class="context-grid"><div><span>Account login</span><strong>${h(env.account_login ?? "Not included")}</strong></div>
+            <div><span>Broker server</span><strong>${h(env.account_server ?? "Not included")}</strong></div></div></details>
+          </div></details>`;
+      }).join("")}</div>`;
+    renderChart($("priceChart"), trade);
+  }
+  function renderActivity() {
+    const report = state.report;
+    const query = $("activitySearch").value.trim().toLowerCase();
+    const includeMarks = $("includeMarks").checked;
+    const eventType = $("activityType").value;
+    const filtered = report.events.filter(item => {
+      if (!includeMarks && item.mark) return false;
+      if (eventType !== "all" && item.event !== eventType) return false;
+      if (!query) return true;
+      return `${item.event} ${item.detail} ${item.sequence}`.toLowerCase().includes(query);
+    });
+    const count = filtered.length;
+    const page = filtered.slice(-250).reverse();
+    $("activityShown").textContent = `${Math.min(count, 250).toLocaleString("en-GB")} of ${count.toLocaleString("en-GB")} matching events`;
+    $("activityList").innerHTML = page.length ? page.map(item => {
+      const trace = item.event === "CANDIDATE_EVENT" ? parseSignalTrace(item.detail) : null;
+      const description = trace ? `Native ${SIGNAL_PATHS[trace.signal_path] || "signal"} · ${trace.bar_close_utc_ms ? compactTime(Number(trace.bar_close_utc_ms)) : "time unavailable"}` : item.detail || "—";
+      return `
+      <div class="activity-item"><span class="activity-seq">#${item.sequence}</span>
+        <span><strong>${h(item.event.replaceAll("_", " "))}</strong><small>${h(description)}</small>
+          ${trace ? `<details class="activity-trace"><summary>Recorded native values</summary>
+            <div class="signal-grid signal-raw">${Object.entries(trace).map(([key, value]) =>
+              `<div><code>${h(key)}</code><strong>${h(value)}</strong></div>`).join("")}</div></details>` : ""}</span>
+        <span class="activity-quote">${price(item.bid)} / ${price(item.ask)}<small>${h(compactTime(item.time))}</small></span>
+      </div>`;
+    }).join("") : '<p class="empty-list">No activity matches these filters.</p>';
+  }
+  async function readActivity(file) {
+    busy(true); announce(`Reading ${file.name}…`);
+    try {
+      const report = await parseActivityFile(file, (done, total) => {
+        $("busyText").textContent = `Checking activity log · ${Math.round(done / Math.max(total, 1) * 100)}%`;
+      });
+      setReport(report);
+      announce(`Checked ${report.activityRecords.toLocaleString("en-GB")} activity records from ${file.name}.`);
+    } catch (error) { announce(error.message, true); }
+    finally { busy(false); activityInput.value = ""; }
+  }
+  activityInput.addEventListener("change", () => { if (activityInput.files[0]) readActivity(activityInput.files[0]); });
+  $("demoButton").addEventListener("click", () => {
+    setReport(demoReport()); announce("Showing illustrative data only. Import a log to view actual virtual activity.");
+  });
+  $("tradeSearch").addEventListener("input", renderTrades);
+  $("sortTrades").addEventListener("change", event => { state.sort = event.target.value; renderTrades(); });
+  $("tradeList").addEventListener("click", event => {
+    const button = event.target.closest("[data-trade-id]");
+    if (!button) return;
+    state.selectedId = Number(button.dataset.tradeId);
+    state.view = "trade"; renderAll();
+  });
+  document.querySelectorAll("[data-status]").forEach(button => button.addEventListener("click", () => {
+    state.status = button.dataset.status;
+    document.querySelectorAll("[data-status]").forEach(item => item.classList.toggle("selected", item === button));
+    renderTrades();
+  }));
+  document.querySelectorAll("[data-view]").forEach(button => button.addEventListener("click", () => {
+    state.view = button.dataset.view; renderAll();
+  }));
+  $("activitySearch").addEventListener("input", renderActivity);
+  $("includeMarks").addEventListener("change", renderActivity);
+  $("activityType").addEventListener("change", renderActivity);
+  $("exportCsv").addEventListener("click", () => {
+    if (state.report) download("GoldEA_trade_activity.csv", tradeCsv(state.report), "text/csv;charset=utf-8");
+  });
+  $("printReport").addEventListener("click", () => window.print());
+  let dragDepth = 0;
+  document.addEventListener("dragenter", event => {
+    if (![...event.dataTransfer?.types || []].includes("Files")) return;
+    event.preventDefault(); dragDepth += 1; $("dropOverlay").hidden = false;
+  });
+  document.addEventListener("dragleave", event => {
+    event.preventDefault(); dragDepth = Math.max(0, dragDepth - 1);
+    if (!dragDepth) $("dropOverlay").hidden = true;
+  });
+  document.addEventListener("dragover", event => event.preventDefault());
+  document.addEventListener("drop", async event => {
+    event.preventDefault(); dragDepth = 0; $("dropOverlay").hidden = true;
+    const files = [...event.dataTransfer.files];
+    const activity = files.find(file => /activity.*\.log$/i.test(file.name)) ||
+      files.find(file => /\.log$/i.test(file.name));
+    if (activity) await readActivity(activity);
+    else announce("Drop a GoldEA_activity_*.log file.", true);
+  });
+}
+if (typeof document !== "undefined") {
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initDashboard);
+  else initDashboard();
+}
+
+  </script>
+</body>
+</html>
