@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <base href="/kitchen-timers/" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>Kitchen Timers</title>
+    <meta
+      name="description"
+      content="Voice-controlled kitchen timers. Say “duck on”, hear “duck timer finished”."
+    />
+    <meta name="theme-color" content="#111418" />
+    <meta name="robots" content="noindex" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" href="icons/icon-192.png" />
+    <link rel="apple-touch-icon" href="icons/icon-192.png" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="bar">
+      <button id="mic" class="mic" type="button" aria-live="polite">
+        <span class="dot" aria-hidden="true"></span>
+        <span id="mic-text">Not listening</span>
+      </button>
+      <div id="heard" class="heard" aria-live="polite">
+        Say a command, e.g. “duck on”
+      </div>
+      <button
+        id="open-settings"
+        class="icon-btn"
+        type="button"
+        aria-label="Settings"
+      >
+        <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true">
+          <path
+            fill="currentColor"
+            d="M19.4 13a7.6 7.6 0 0 0 0-2l2.1-1.6-2-3.5-2.5 1a7.4 7.4 0 0 0-1.7-1L15 3h-4l-.3 2.9a7.4 7.4 0 0 0-1.7 1l-2.5-1-2 3.5L6.6 11a7.6 7.6 0 0 0 0 2l-2.1 1.6 2 3.5 2.5-1a7.4 7.4 0 0 0 1.7 1L11 21h4l.3-2.9a7.4 7.4 0 0 0 1.7-1l2.5 1 2-3.5zM13 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z"
+            transform="translate(-1 0)"
+          />
+        </svg>
+      </button>
+    </header>
+
+    <main>
+      <section id="timers" class="timers" aria-label="Running timers"></section>
+      <p id="empty" class="empty">
+        No timers running.<br /><span
+          >Say “<b id="example">duck</b> on” or tap a button below.</span
+        >
+      </p>
+    </main>
+
+    <nav id="quick" class="quick" aria-label="Start a timer"></nav>
+
+    <div id="start" class="start">
+      <button id="start-btn" type="button">
+        <span class="big">Tap to start</span>
+        <span class="small"
+          >Turns on the microphone, sound and keeps the screen awake</span
+        >
+      </button>
+    </div>
+
+    <dialog id="settings">
+      <form method="dialog" id="settings-form">
+        <h2 tabindex="-1" autofocus>Settings</h2>
+
+        <h3>Timers</h3>
+        <p class="hint">
+          “Also hears as” takes other words the tablet hears instead of the
+          name, separated by commas (e.g. <i>doc, dock</i>). Check “Last heard”
+          at the top of the screen to see what it thinks you said.
+        </p>
+        <div class="items-head" aria-hidden="true">
+          <span>Name</span><span>Min</span><span>Sec</span
+          ><span>Also hears as</span><span></span>
+        </div>
+        <div id="items"></div>
+        <button type="button" id="add-item" class="secondary">
+          + Add timer
+        </button>
+
+        <h3>Voice</h3>
+        <div class="grid">
+          <label
+            >Language / accent
+            <select id="lang">
+              <option value="en-GB">English (UK)</option>
+              <option value="en-IE">English (Ireland)</option>
+              <option value="en-US">English (US)</option>
+              <option value="en-AU">English (Australia)</option>
+              <option value="en-NZ">English (New Zealand)</option>
+              <option value="en-IN">English (India)</option>
+              <option value="en-ZA">English (South Africa)</option>
+            </select>
+          </label>
+          <label
+            >Speaking voice
+            <select id="voice">
+              <option value="">Default</option>
+            </select>
+          </label>
+          <label
+            >Speaking speed
+            <input id="rate" type="range" min="0.6" max="1.6" step="0.1" />
+          </label>
+          <label
+            >Repeat finished alarms every (seconds)
+            <input
+              id="repeat"
+              type="number"
+              min="3"
+              max="120"
+              step="1"
+              inputmode="numeric"
+            />
+          </label>
+          <label class="check"
+            ><input id="confirm" type="checkbox" /> Say commands back (“duck, 5
+            minutes”)</label
+          >
+          <label class="check"
+            ><input id="chime" type="checkbox" /> Beep before alarms</label
+          >
+        </div>
+        <button type="button" id="test-voice" class="secondary">
+          Test alarm sound
+        </button>
+
+        <h3>Try a command</h3>
+        <p class="hint">
+          Type what you'd say to check it's understood, e.g. <i>duck on</i>,
+          <i>duck off</i>, <i>all off</i>.
+        </p>
+        <div class="try">
+          <input
+            id="try-text"
+            type="text"
+            placeholder="duck on"
+            autocomplete="off"
+          />
+          <button type="button" id="try-btn" class="secondary">Run</button>
+        </div>
+
+        <div class="actions">
+          <button value="cancel" class="secondary" formnovalidate>
+            Cancel
+          </button>
+          <button id="save" value="save" class="primary">Save</button>
+        </div>
+      </form>
+    </dialog>
+
+    <template id="item-row">
+      <div class="item-row">
+        <input
+          class="name"
+          type="text"
+          placeholder="e.g. lamb"
+          aria-label="Name"
+          required
+        />
+        <input
+          class="min"
+          type="number"
+          min="0"
+          max="999"
+          inputmode="numeric"
+          aria-label="Minutes"
+        />
+        <input
+          class="sec"
+          type="number"
+          min="0"
+          max="59"
+          inputmode="numeric"
+          aria-label="Seconds"
+        />
+        <input
+          class="aliases"
+          type="text"
+          placeholder="also hears as… (optional)"
+          aria-label="Also hears as"
+        />
+        <button type="button" class="remove icon-btn" aria-label="Remove">
+          ✕
+        </button>
+      </div>
+    </template>
+
+    <script type="module" src="src/app.js"></script>
+  </body>
+</html>
