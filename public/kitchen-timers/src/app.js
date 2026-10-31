@@ -357,7 +357,8 @@ function openSettings() {
 }
 
 function readForm() {
-  const items = [...$("#items").children].map((row) => {
+  // Only real rows: password managers (e.g. LastPass) inject their own elements here.
+  const items = [...$("#items").querySelectorAll(".item-row")].map((row) => {
     const name = row.querySelector(".name").value.trim();
     return {
       id: row.dataset.id || slug(name),

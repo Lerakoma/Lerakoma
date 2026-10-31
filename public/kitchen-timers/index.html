@@ -145,12 +145,13 @@
           <button type="button" id="try-btn" class="secondary">Run</button>
         </div>
 
+        <!-- Save comes first so pressing Return in a field saves; CSS shows it on the right. -->
         <div class="actions">
-          <button value="cancel" class="secondary" formnovalidate>
-            Cancel
-          </button>
           <button id="save" value="save" class="primary" formnovalidate>
             Save
+          </button>
+          <button value="cancel" class="secondary" formnovalidate>
+            Cancel
           </button>
         </div>
       </form>
