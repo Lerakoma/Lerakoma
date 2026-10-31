@@ -325,7 +325,8 @@ function addItemRow(item = { name: "", seconds: 300, aliases: [] }) {
 
 function fillVoices() {
   const select = $("#voice");
-  const keep = settings.voiceURI;
+  // Keep an unsaved pick if the voice list reloads while settings are open.
+  const keep = dialog.open ? select.value : settings.voiceURI;
   select.textContent = "";
   const def = document.createElement("option");
   def.value = "";
