@@ -319,6 +319,9 @@ a { color: inherit; }
 .daily-title { margin: 18px 0 0; }
 .daily-table-wrap { margin-bottom: 18px; }
 .daily-table { min-width: 660px; }
+.daily-table .daily-total-cell { background: #edf6f2; border-right: 1px solid #dcebe4; }
+.daily-table .daily-total-cell strong { display: block; color: #216b50; white-space: nowrap; }
+.daily-table .daily-total-cell .cell-sub { white-space: nowrap; }
 .scenario-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
   gap: 9px; margin-bottom: 15px; }
 .scenario-summary > div { padding: 11px 13px; background: #f7f8f8; border-radius: 8px; }
@@ -1481,7 +1484,7 @@ function returnBucketHtml(trades) {
   const projected = bucket.modelled > 0 && bucket.modelledKnown === bucket.modelled;
   const total = bucket.net + (projected ? bucket.modelledGbp : 0);
   return `<strong class="${total < 0 ? "negative" : "positive"}">${bucket.recorded || projected ? `${money(total)}${projected ? " provisional" : ""}` : "—"}</strong>
-    <span class="cell-sub">${bucket.count} trades · ${bucket.open} open${bucket.modelled ? ` · recorded ${money(bucket.net)} + ${bucket.modelled} modelled${projected ? ` ${money(bucket.modelledGbp)}` : ", GBP pending"}` : ""}${bucket.incomplete ? ` · ${bucket.incomplete} incomplete, excluded` : ""}</span>`;
+    <span class="cell-sub">${bucket.count} trade${bucket.count === 1 ? "" : "s"} · ${bucket.open} open${bucket.modelled ? ` · recorded ${money(bucket.net)} + ${bucket.modelled} modelled${projected ? ` ${money(bucket.modelledGbp)}` : ", GBP pending"}` : ""}${bucket.incomplete ? ` · ${bucket.incomplete} incomplete, excluded` : ""}</span>`;
 }
 
 function dailyPerformance(rows) {
@@ -2270,15 +2273,16 @@ function initDashboard() {
           ${returnBucketHtml(trades.filter(trade => recordedStars(trade) === stars))}</div>`).join("")}</div>
         ${unknown.length ? `<p class="unrated-note">Rating not recorded: ${returnBucketHtml(unknown)}</p>` : ""}</div>`;
     }).join("");
-    $("dailyHead").innerHTML = `<tr><th rowspan="2">Open date (UTC)</th>${labels.map(label =>
+    $("dailyHead").innerHTML = `<tr><th rowspan="2">Open date (UTC)</th><th rowspan="2" class="daily-total-cell">Total trades</th>${labels.map(label =>
       `<th colspan="2">${h(label === "Unknown" ? "Unlabelled" : label)}</th>`).join("")}</tr>
       <tr>${labels.map(() => '<th>3-star signals</th><th>2-star signals</th>').join("")}</tr>`;
     const days = [...new Set(allRows.map(row => tradeOpenDay(row.trade) || "Date unavailable"))].sort().reverse();
     $("dailyRows").innerHTML = days.length ? days.map(day => {
       const entries = allRows.filter(row => (tradeOpenDay(row.trade) || "Date unavailable") === day);
-      return `<tr><td class="cell-main">${h(day)}</td>${labels.map(label => [3, 2].map(stars =>
+      const openCount = entries.filter(row => row.trade.active).length;
+      return `<tr><td class="cell-main">${h(day)}</td><td class="daily-total-cell"><strong>${entries.length} trade${entries.length === 1 ? "" : "s"}</strong><span class="cell-sub">${openCount} open</span></td>${labels.map(label => [3, 2].map(stars =>
         `<td>${returnBucketHtml(entries.filter(row => row.source.scenario === label && recordedStars(row.trade) === stars).map(row => row.trade))}</td>`).join("")).join("")}</tr>`;
-    }).join("") : `<tr><td colspan="${labels.length * 2 + 1}" class="compare-empty">No trades opened in this date range.</td></tr>`;
+    }).join("") : `<tr><td colspan="${labels.length * 2 + 2}" class="compare-empty">No trades opened in this date range.</td></tr>`;
     const query = $("compareSearch").value.trim().toLowerCase();
     const scenario = $("compareScenario").value;
     const sharedOnly = $("sharedOnly").checked;
